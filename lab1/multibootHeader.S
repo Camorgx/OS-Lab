@@ -42,7 +42,7 @@ start:
             _   0x5f
     */
     
-    # VGA helloworld
+    # VGA
     movl $0x2f652f68, 0xB8000 # he
     movl $0x2f6c2f6c, 0xB8004 # ll
     movl $0x2f772f6f, 0xB8008 # ow
