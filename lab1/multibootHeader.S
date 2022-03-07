@@ -6,7 +6,7 @@ flags = 0
 checksum = -0x1BADB002
 
 # Standard multiboot header
-.section header
+.section .multiboot_header
 .long magic
 .long flags
 .long checksum
