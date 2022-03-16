@@ -13,7 +13,12 @@ int myPrintk(int color, const char *format, ...) {
     int cnt = vsprintf(kBuf, format, args);
     va_end(args);
     
-    /* todo */
+    // VGA 输出
+    clear_screen();
+    append2screen(kBuf, color);
+
+    // 串口输出
+    uart_put_chars(kBuf);
     
     return cnt;
 }
@@ -29,7 +34,12 @@ int myPrintf(int color, const char *format, ...) {
     int cnt = vsprintf(uBuf, format, args);
     va_end(args);
 
-    /* todo */
+    // VGA 输出
+    clear_screen();
+    append2screen(kBuf, color);
+
+    // 串口输出
+    uart_put_chars(kBuf);
     
     return cnt;
 }
