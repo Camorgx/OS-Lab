@@ -20,10 +20,10 @@ typedef struct { int x, y; } point;
 void set_cursor_pos(point pos) {
     // 设置行号
     outb(CURSOR_INDEX_PORT, CURSOR_LINE_REG);
-    outb(CURSOR_DATA_PORT, pos.x);
+    outb(CURSOR_DATA_PORT, (unsigned char)pos.x);
     // 设置列号
     outb(CURSOR_INDEX_PORT, CURSOR_COL_REG);
-    outb(CURSOR_DATA_PORT, pos.y);
+    outb(CURSOR_DATA_PORT, (unsigned char)pos.y);
 }
 
 /* 读取光标当前所在位置
@@ -49,7 +49,7 @@ void scroll_screen(void) {
             ++pos;
         }
     for (int i = 0; i < VGA_SCREEN_WIDTH; ++i)
-        *pos = 0x0020;
+        *(pos++) = 0x0020;
     set_cursor_pos((point){VGA_SCREEN_HEIGHT, 1});
 }
 
@@ -81,13 +81,19 @@ void append2screen(char *str, int color) {
     for (char* i = str; *i != '\0'; ++i) {
         if (*i == '\n') { 
             cur_pos.y = 1; 
-            if (++cur_pos.x > VGA_SCREEN_HEIGHT) scroll_screen();
+            if (++cur_pos.x > VGA_SCREEN_HEIGHT) {
+                scroll_screen();
+                cur_pos.x = VGA_SCREEN_HEIGHT;
+            }
             continue;
         }
         put_char2pos(*i, color, cur_pos);
         if (++cur_pos.y > VGA_SCREEN_WIDTH) {
             cur_pos.y = 1;
-            if (++cur_pos.x > VGA_SCREEN_HEIGHT) scroll_screen();
+            if (++cur_pos.x > VGA_SCREEN_HEIGHT) {
+                scroll_screen();
+                cur_pos.x = VGA_SCREEN_HEIGHT;
+            }
         }
     }
     set_cursor_pos(cur_pos);

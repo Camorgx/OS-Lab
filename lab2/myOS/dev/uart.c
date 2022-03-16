@@ -6,7 +6,8 @@
 /* 向串口输出一个字符
  * 使用封装好的 outb 函数 */
 void uart_put_char(unsigned char ch) {
-    outb(UART_PORT, (ch == '\n') ? '\r' : ch);
+    outb(UART_PORT, ch);
+    if (ch == '\n') outb(UART_PORT, '\r');
 }
 
 /* 向串口输出一个字符串

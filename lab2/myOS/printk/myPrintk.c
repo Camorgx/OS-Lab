@@ -7,6 +7,8 @@
  * 禁止修改此函数接口 */
 char kBuf[400];
 int myPrintk(int color, const char *format, ...) {
+    for (int i = 0; i < 400; ++i)
+        kBuf[i] = '\0';
     va_list args;
     
     va_start(args, format);
@@ -14,7 +16,6 @@ int myPrintk(int color, const char *format, ...) {
     va_end(args);
     
     // VGA 输出
-    clear_screen();
     append2screen(kBuf, color);
 
     // 串口输出
@@ -28,14 +29,15 @@ int myPrintk(int color, const char *format, ...) {
  * 禁止修改此函数接口 */
 char uBuf[400];
 int myPrintf(int color, const char *format, ...) {
+    for (int i = 0; i < 400; ++i)
+        kBuf[i] = '\0';
     va_list args;
     
     va_start(args, format);
-    int cnt = vsprintf(uBuf, format, args);
+    int cnt = vsprintf(kBuf, format, args);
     va_end(args);
-
+    
     // VGA 输出
-    clear_screen();
     append2screen(kBuf, color);
 
     // 串口输出
