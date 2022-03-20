@@ -46,7 +46,7 @@ void scroll_screen(void) {
             ++pos;
         }
     for (int i = 0; i < VGA_SCREEN_WIDTH; ++i)
-        *(pos++) = 0x0020;
+        *(pos++) = 0x0f20;
     set_cursor_pos((VGA_SCREEN_HEIGHT - 1) * VGA_SCREEN_WIDTH + 1);
 }
 
@@ -65,7 +65,7 @@ void clear_screen(void) {
     short* pos = VGA_BASE;
     for (int i = 0; i < VGA_SCREEN_HEIGHT; ++i)
         for (int j = 0; j < VGA_SCREEN_WIDTH; ++j)
-            *(pos++) = 0x0020;
+            *(pos++) = 0x0f20;
     set_cursor_pos(0);
 }
 
