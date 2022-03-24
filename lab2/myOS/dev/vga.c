@@ -47,7 +47,7 @@ void scroll_screen(void) {
         }
     for (int i = 0; i < VGA_SCREEN_WIDTH; ++i)
         *(pos++) = 0x0f20;
-    set_cursor_pos((VGA_SCREEN_HEIGHT - 1) * VGA_SCREEN_WIDTH + 1);
+    set_cursor_pos((VGA_SCREEN_HEIGHT - 1) * VGA_SCREEN_WIDTH);
 }
 
 /* 向 vga 的特定光标位置 pos 输出一个字符
@@ -76,17 +76,17 @@ void append2screen(char *str, int color) {
     unsigned cur_pos = get_cursor_pos();
     for (char* i = str; *i != '\0'; ++i) {
         if (*i == '\n') { 
-            cur_pos = ((cur_pos + 1) / VGA_SCREEN_WIDTH + 1) * VGA_SCREEN_WIDTH + 1;
+            cur_pos = ((cur_pos + 1) / VGA_SCREEN_WIDTH + 1) * VGA_SCREEN_WIDTH;
             if (cur_pos + 1 > VGA_SCREEN_HEIGHT * VGA_SCREEN_WIDTH) {
                 scroll_screen();
-                cur_pos = (VGA_SCREEN_HEIGHT - 1) * VGA_SCREEN_WIDTH + 1;
+                cur_pos = (VGA_SCREEN_HEIGHT - 1) * VGA_SCREEN_WIDTH;
             }
             continue;
         }
         put_char2pos(*i, color, cur_pos++);
         if (cur_pos + 1 > VGA_SCREEN_HEIGHT * VGA_SCREEN_WIDTH) {
             scroll_screen();
-            cur_pos = (VGA_SCREEN_HEIGHT - 1) * VGA_SCREEN_WIDTH + 1;
+            cur_pos = (VGA_SCREEN_HEIGHT - 1) * VGA_SCREEN_WIDTH;
         }
     }
     set_cursor_pos(cur_pos);
