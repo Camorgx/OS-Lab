@@ -1,6 +1,7 @@
 #include "vga.h"
 #include "uart.h"
 #include "vsprintf.h"
+#include "myPrintk.h"
 
 /* 内核 print 函数
  * 调用已经完成的 vga 和 串口 输出接口，补全此函数

@@ -63,12 +63,21 @@ shut_down:
 
 	.p2align 4
 time_interrupt:
-//你需要填写它
+	pushf
+	pusha
+	call tick
+	popa
+	popf
+	iret
 	
 	.p2align 4
 ignore_int1:
-//你需要填写它
-	
+	pushf
+	pusha
+	call ignoreIntBody
+	popa
+	popf
+	iret
 
 # ret /* if do not set timer*/
 setup_time_int_32:
