@@ -3,5 +3,6 @@
 
 #include <stdarg.h>
 int vsprintf(char *buf, const char *fmt, va_list args);
+int strcmp(const char *source,const char *dest);
 
 #endif

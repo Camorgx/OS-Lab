@@ -6,55 +6,81 @@
 #include "i8259A.h"
 #include "tick.h"
 #include "wallClock.h"
+#include "vsprintf.h"
 
 typedef struct myCommand {
     char name[80];
     char help_content[200];
     int (*func)(int argc, char (*argv)[8]);
-}myCommand; 
+} myCommand; 
 
+int func_cmd(int argc, char (*argv)[8]);
+int func_help(int argc, char (*argv)[8]);
 
-int func_cmd(int argc, char (*argv)[8]){
-	
+myCommand cmd = {"cmd", "List all command\n", func_cmd};
+myCommand help = {"help", "Usage: help [command]\nDisplay info about [command]\n", func_help};
+myCommand* commands[8] = {&cmd, &help};
+int command_num = 2;
+
+int func_cmd(int argc, char (*argv)[8]) {
+    for (int i = 0; i < command_num; ++i)
+        myPrintf(0x7, "%s ", commands[i]->name);
+    myPrintf(0x7, "\n");
+    return 0;
 } 
 
-myCommand cmd={"cmd\0","List all command\n\0",func_cmd};
-
-int func_help(int argc, char (*argv)[8]){
-
+int func_help(int argc, char (*argv)[8]) {
+    for (int i = 0; i < command_num; ++i) {
+        if (strcmp(argv[1], commands[i]->name) == 0) {
+            myPrintf(0x7, "%s\n", commands[i]->help_content);
+            return 0;
+        }
+    }
+    myPrintf(0x7, "Command %s not found!", argv[1]);
+    return 1;
 }
 
-myCommand help={"help\0","Usage: help [command]\n\0Display info about [command]\n\0",func_help};
-
-
-void startShell(void){
-//我们通过串口来实现数据的输入
-char BUF[256]; //输入缓存区
-int BUF_len=0;	//输入缓存区的长度
-    
-	int argc;
-    char argv[8][8];
-
-    do{
-        BUF_len=0; 
-        myPrintk(0x07,"Student>>\0");
-        while((BUF[BUF_len]=uart_get_char())!='\r'){
-            uart_put_char(BUF[BUF_len]);//将串口输入的数存入BUF数组中
-            BUF_len++;  //BUF数组的长度加
+void split(char ans[8][8], const char* line) {
+    int quote_cnt = 0;
+    for (int i = 0; line[i] != '\0'; ++i)
+        if (line[i] == '\"') ++quote_cnt;
+    if (quote_cnt % 2) {
+        ans[0][0] = '\0';
+        return;
+    }
+    int cnt = 0, cnt_p = 0;
+    int in_quote = 0;
+    int num = 8, num_p = 8;
+    for (int i = 0; line[i] != '\0'; ++i) {
+        if (line[i] == '\"') in_quote = !in_quote;
+        else if (!in_quote && line[i] == ' ' && cnt) {
+            ans[cnt_p++][cnt] = '\0'; cnt = 0;
         }
-        uart_put_chars(" -pseudo_terminal\0");
+        else ans[cnt_p][cnt++] = line[i];  
+    }
+    ans[cnt_p][cnt] = '\0';
+    ans[cnt_p + 1][0] = '\0';
+}
+
+void startShell(void) {
+    //我们通过串口来实现数据的输入
+    char BUF[64] = {0}; //输入缓存区
+    int BUF_len = 0;	//输入缓存区的长度
+
+    do {
+        BUF_len = 0; 
+        myPrintf(0x07, "Student>>");
+        while((BUF[BUF_len] = uart_get_char()) != '\r')
+            uart_put_char(BUF[BUF_len++]); //将串口输入的数存入BUF数组中
+        uart_put_chars(" -pseudo_terminal");
         uart_put_char('\n');
 
-        //OK,助教已经帮助你们实现了“从串口中读取数据存储到BUF数组中”的任务，接下来你们要做
-        //的就是对BUF数组中存储的数据进行处理(也即，从BUF数组中提取相应的argc和argv参
-        //数)，再根据argc和argv，寻找相应的myCommand ***实例，进行***.func(argc,argv)函数
-        //调用。
-
-        //比如BUF中的内容为 “help cmd”
-        //那么此时的argc为2 argv[0]为help argv[1]为cmd
-        //接下来就是 help.func(argc, argv)进行函数调用即可
-
-    }while(1);
-
+        char argv[8][8];
+        split(argv, BUF);
+        int argc = 0;
+        for (int i = 0; argv[i][0] != '\0'; ++i) ++argc;
+        for (int i = 0; i < command_num; ++i)
+            if (strcmp(argv[1], commands[i]->name) == 0)
+                commands[i]->func(argc, argv);
+    } while(1);
 }
-
