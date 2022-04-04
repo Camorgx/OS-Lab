@@ -36,7 +36,7 @@ int func_help(int argc, char (*argv)[8]) {
             return 0;
         }
     }
-    myPrintf(0x7, "Command %s not found!", argv[1]);
+    myPrintf(0x7, "Command %s not found!\n", argv[1]);
     return 1;
 }
 
@@ -71,16 +71,22 @@ void startShell(void) {
         BUF_len = 0; 
         myPrintf(0x07, "Student>>");
         while((BUF[BUF_len] = uart_get_char()) != '\r')
-            uart_put_char(BUF[BUF_len++]); //将串口输入的数存入BUF数组中
-        uart_put_chars(" -pseudo_terminal");
-        uart_put_char('\n');
+            myPrintf(0x7, "%c", BUF[BUF_len++]);
+        myPrintf(0x7, "\n");
+        BUF[BUF_len] = '\0';
 
         char argv[8][8];
         split(argv, BUF);
         int argc = 0;
         for (int i = 0; argv[i][0] != '\0'; ++i) ++argc;
-        for (int i = 0; i < command_num; ++i)
-            if (strcmp(argv[1], commands[i]->name) == 0)
+        int flag = 0;
+        for (int i = 0; i < command_num; ++i) {
+            if (strcmp(argv[0], commands[i]->name) == 0) {
                 commands[i]->func(argc, argv);
+                flag = 1;
+            }
+            else if (strcmp(argv[0], "exit") == 0) return;
+        }
+        if (!flag) myPrintf(0x7, "Command %s not found!\n", argv[0]);
     } while(1);
 }

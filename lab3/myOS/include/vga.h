@@ -11,6 +11,8 @@
 #define CURSOR_DATA_PORT 0x3D5 // 光标数据端口号
 
 void put_char2pos(unsigned char c, int color, unsigned pos);
+unsigned get_cursor_pos(void);
+void set_cursor_pos(unsigned pos);
 
 void append2screen(char *str, int color);
 void clear_screen(void);

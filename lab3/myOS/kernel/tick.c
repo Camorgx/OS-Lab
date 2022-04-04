@@ -10,6 +10,5 @@ void tick(void){
         if (HH >= 24) HH = 0;
     }
     setWallClock(HH,MM,SS);
-    return;
 }
 
