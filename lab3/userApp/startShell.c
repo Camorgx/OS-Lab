@@ -1,12 +1,6 @@
-#include "io.h"
-#include "myPrintk.h"
 #include "uart.h"
-#include "vga.h"
-#include "i8253.h"
-#include "i8259A.h"
-#include "tick.h"
-#include "wallClock.h"
-#include "vsprintf.h"
+#include "libio.h"
+#include "libstring.h"
 
 typedef struct myCommand {
     char name[80];

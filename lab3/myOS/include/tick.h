@@ -3,8 +3,10 @@
 extern int system_ticks;
 extern int HH,MM,SS;
 
-void enable_interrupt(void);
-void disable_interrupt(void);
-void tick(void);
+// From asm file.
+extern void enable_interrupt(void);
+extern void disable_interrupt(void);
+
+extern void tick(void);
 
 #endif

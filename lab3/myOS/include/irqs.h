@@ -3,6 +3,6 @@
 
 #include "vga.h" 
 
-void ignoreIntBody(void);
+extern void ignoreIntBody(void);
 
 #endif
