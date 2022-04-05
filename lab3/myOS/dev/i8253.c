@@ -7,8 +7,10 @@ void init8253(void){
     outb(0x40, para >> 8); // Higher bits
     
     // Allow time interrupt
-    unsigned short master = inb(0x21);
-    unsigned short slave = inb(0xA1);
+    unsigned char master = inb(0x21);
+    unsigned char slave = inb(0xA1);
     master = (master >> 1) << 1;
     slave = (slave >> 1) << 1;
+    outb(0x21, master);
+    outb(0xA1, slave);
 }
