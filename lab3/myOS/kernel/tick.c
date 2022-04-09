@@ -9,6 +9,6 @@ void tick(void){
         if (MM >= 60) { MM = 0; ++HH; }
         if (HH >= 24) HH = 0;
     }
-    setWallClock(HH,MM,SS);
+    oneTickUpdateWallClock(HH, MM, SS);
 }
 
