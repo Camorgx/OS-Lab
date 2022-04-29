@@ -23,7 +23,7 @@ void setWallClockHook(void (*func)(void)) {
 
 void displayWallClock(void) {
     int h, m, s;
-    getWallClock(h, m, s);
+    getWallClock(&h, &m, &s);
     put_char2pos(h / 10 + '0', 0x2, hour_offset);
     put_char2pos(h % 10 + '0', 0x2, hour_offset + 1);
     put_char2pos(':', 0x2, hour_offset + 2);

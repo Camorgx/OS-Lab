@@ -1,2 +1,2 @@
-USER_APP_OBJS =	output/userApp/main.o \
-				output/userApp/shell.o
+USER_APP_OBJS =	output/userApp/src/main.o \
+				output/userApp/src/shell.o

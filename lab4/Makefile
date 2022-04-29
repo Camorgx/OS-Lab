@@ -1,7 +1,8 @@
 CROSS_COMPILE=
 ASM_FLAGS= -m32 --pipe -Wall -fasm -g -O1 -fno-stack-protector	
 C_FLAGS =  -m32 -fno-stack-protector -g
-INCLUDE_PATH = myOS/include userApp/include
+OS_INCLUDE_PATH = myOS/include 
+USER_INCLUDE_PATH = userApp/include
 
 .PHONY: all
 all: output/myOS.elf
@@ -21,7 +22,7 @@ output/%.o : %.S
 
 output/%.o : %.c
 	@mkdir -p $(dir $@)
-	@${CROSS_COMPILE}gcc ${C_FLAGS} -I${INCLUDE_PATH} -c -o $@ $<
+	@${CROSS_COMPILE}gcc ${C_FLAGS} -I${OS_INCLUDE_PATH} -I ${USER_INCLUDE_PATH} -c -o $@ $<
 
 clean:
 	rm -rf output
