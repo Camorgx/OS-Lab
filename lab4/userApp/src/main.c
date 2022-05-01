@@ -3,5 +3,6 @@
 
 void myMain(void){    
     setWallClockHook(displayWallClock);
+    initShell();
     startShell();
 }

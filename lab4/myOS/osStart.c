@@ -14,17 +14,8 @@ void osStart(void)
 	init8253();
 	tick();
 	enable_interrupt();
-	
-    clear_screen();
-
     pMemInit();  //after this, we can use kmalloc/kfree and malloc/free
-    myPrintk(0x2, "OS Started.\n");
-	{
-		unsigned long tmp = dPartitionAlloc(kernelMemHandler,100);
-		dPartitionWalkByAddr(kernelMemHandler);
-		dPartitionFree(kernelMemHandler,tmp);
-		dPartitionWalkByAddr(kernelMemHandler);
-	}
+    clear_screen();
 
     myPrintk(0x2, "START RUNNING......\n");
     myMain();

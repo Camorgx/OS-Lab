@@ -1,38 +1,67 @@
 #include "userInterface.h"
 #include "libstring.h"
+#include "libmem.h"
 #include "libio.h"
 
 typedef struct myCommand {
-    char name[80];
-    char help_content[200];
+    char *name;
+    char *description;
     int (*func)(int argc, char (*argv)[8]);
-} myCommand; 
+    void (*help_func)(void);
+} myCommand;
 
-int func_cmd(int argc, char (*argv)[8]);
-int func_help(int argc, char (*argv)[8]);
+typedef struct command_list {
+    myCommand* command;
+    struct command_list* prev, * next;
+} command_list;
 
-myCommand cmd = {"cmd", "List all command\n", func_cmd};
-myCommand help = {"help", "Usage: help [command]\nDisplay info about [command]\n", func_help};
-myCommand* commands[8] = {&cmd, &help};
-int command_num = 2;
+command_list* head;
+unsigned cmd_cnt = 0;
+
+/*
+    功能：增加命令
+    1.使用malloc创建一个cm的结构体，新增命令。
+    2.同时还需要维护一个表头为head的链表。
+*/
+void addNewCmd(const char *cmd, int (*func)(int argc, char (*argv)[8]),
+               void (*help_func)(void), const char* description) {
+    myCommand* command = (myCommand*) malloc(sizeof(myCommand));
+    command->name = (char*) malloc((strlen(cmd) + 1) * sizeof(char));
+    memcpy(command->name, cmd, (strlen(cmd) + 1) * sizeof(char));
+    command->func = func;
+    command->help_func = help_func;
+    command->description = (char*) malloc((strlen(description) + 1) * sizeof(char));
+    memcpy(command->description, description, (strlen(description) + 1) * sizeof(char));
+    command_list* next = (command_list*) malloc(sizeof(command_list));
+    next->prev = head;
+    next->next = head->next;
+    next->command = command;
+    head->next = next;
+}
 
 int func_cmd(int argc, char (*argv)[8]) {
-    for (int i = 0; i < command_num; ++i)
-        myPrintf(0x7, "%s ", commands[i]->name);
+    for (command_list* p = head->next; p; p = p->next)
+        myPrintf(0x7, "%s ", p->command->name);
     myPrintf(0x7, "\n");
     return 0;
-} 
+}
 
 int func_help(int argc, char (*argv)[8]) {
-    for (int i = 0; i < command_num; ++i) {
-        if (strcmp(argv[1], commands[i]->name) == 0) {
-            myPrintf(0x7, "%s\n", commands[i]->help_content);
+    for (command_list* p = head->next; p; p = p->next)
+        if (strcmp(argv[1], p->command->name) == 0) {
+            myPrintf(0x7, "%s\n", p->command->description);
+            if (p->command->help_func) p->command->help_func();
             return 0;
         }
-    }
     myPrintf(0x7, "Command %s not found!\n", argv[1]);
     return 1;
 }
+
+void help_help(void) {
+    myPrintf(0x7, "USAGE: help [cmd]\n");
+}
+
+int func_exit(int argc, char (*argv)[8]) { return 0; }
 
 void split(char ans[8][8], const char* line) {
     int quote_cnt = 0;
@@ -50,7 +79,7 @@ void split(char ans[8][8], const char* line) {
         else if (!in_quote && line[i] == ' ' && cnt) {
             ans[cnt_p++][cnt] = '\0'; cnt = 0;
         }
-        else ans[cnt_p][cnt++] = line[i];  
+        else ans[cnt_p][cnt++] = line[i];
     }
     ans[cnt_p][cnt] = '\0';
     ans[cnt_p + 1][0] = '\0';
@@ -74,17 +103,19 @@ void startShell(void) {
         int argc = 0;
         for (int i = 0; argv[i][0] != '\0'; ++i) ++argc;
         int flag = 0;
-        for (int i = 0; i < command_num; ++i) {
-            if (strcmp(argv[0], commands[i]->name) == 0) {
-                commands[i]->func(argc, argv);
+        for (command_list* p = head->next; p; p = p->next) {
+            if (strcmp(argv[0], p->command->name) == 0) {
+                p->command->func(argc, argv);
                 flag = 1;
             }
-            else if (strcmp(argv[0], "exit") == 0) return;
+            if (strcmp(argv[0], "exit") == 0) return;
         }
         if (!flag) myPrintf(0x7, "Command %s not found!\n", argv[0]);
     } while(1);
 }
 
 void initShell(void) {
-
+    addNewCmd("cmd", func_cmd, NULL, "Display all commands.");
+    addNewCmd("help", func_help, help_help, "Get help of a certain command.");
+    addNewCmd("exit", func_exit, NULL, "Exit the shell.");
 }

@@ -60,7 +60,7 @@ static int is_space( int ch )
     return (unsigned long)(ch - 9) < 5u || ' ' == ch;
 }
  
-static int atoi(char *str)
+int atoi(char *str)
 {
    int sign;
    int n;
@@ -78,7 +78,7 @@ static int atoi(char *str)
 }
 #ifndef INCLUDE_STRING
  
-static char * strchr(const char *str, int ch)
+char * strchr(const char *str, int ch)
 {
     while (*str && *str != (char)ch) str++;
  
@@ -87,7 +87,7 @@ static char * strchr(const char *str, int ch)
  
     return 0;
 }
-static void * memset(void *dst, int val, unsigned long ulcount)
+void * memset(void *dst, int val, unsigned long ulcount)
 {
     if(!dst) return 0;
     char * pchdst = (char*)dst;
@@ -96,7 +96,7 @@ static void * memset(void *dst, int val, unsigned long ulcount)
     return dst;
 }
  
-static void * memcpy(void *dst, const void *src, unsigned long ulcount)
+void * memcpy(void *dst, const void *src, unsigned long ulcount)
 {
    if(!(dst && src)) return 0;
    char * pchdst = (char*)dst;
@@ -106,7 +106,7 @@ static void * memcpy(void *dst, const void *src, unsigned long ulcount)
    return dst;
 }
  
-static int strlen(const char * str)
+int strlen(const char * str)
 {
     const char *p = str;
     while(*p++);
@@ -130,7 +130,7 @@ int strcmp(const char *source,const char *dest)
  
     return(ret);
 }
-static int strncmp(const char *first,const char *last,int count)
+int strncmp(const char *first,const char *last,int count)
 {
    if (!count)  return 0;
  
@@ -139,14 +139,14 @@ static int strncmp(const char *first,const char *last,int count)
    return ( *(unsigned char *)first - *(unsigned char *)last );
 }
 #endif  /*NO_INCLUDE_STRING*/
-static unsigned long strnlen(const char *s, int count)
+unsigned long strnlen(const char *s, int count)
 {
     const char *sc;
     for (sc = s; *sc != '\0' && count--; ++sc);
     return sc - s;
 }
  
-static char * itoa(int n, char * chBuffer)
+char * itoa(int n, char * chBuffer)
 {
     int i = 1;
     char * pch = chBuffer;
@@ -421,7 +421,7 @@ static char * ftoaE(char* pchBuffer, int dppos, double value)
 }
  
 #define MAX_DIGITS     15
-static char * ftoa(double dValue, char * chBuffer)
+char * ftoa(double dValue, char * chBuffer)
 {
     char * pch = chBuffer;
     if(!pch) return 0;

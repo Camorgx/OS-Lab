@@ -7,4 +7,8 @@
 #include "uart.h"
 #include "vga.h"
 
-#endif //LAB4_USERINTERFACE_H
+#ifndef NULL
+#define NULL ((void*)0)
+#endif // NULL
+
+#endif // LAB4_USERINTERFACE_H

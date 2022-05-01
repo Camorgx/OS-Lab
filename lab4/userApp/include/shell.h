@@ -4,9 +4,7 @@
 extern void initShell(void);
 extern void startShell(void);
 
-extern void addNewCmd(	unsigned char *cmd,
-    int (*func)(int argc, unsigned char **argv),
-    void (*help_func)(void),
-    unsigned char* description);
+extern void addNewCmd(const char *cmd, int (*func)(int argc, char (*argv)[8]),
+    void (*help_func)(void), const char* description);
             
 #endif
