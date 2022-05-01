@@ -1,6 +1,6 @@
-#include "uart.h"
-#include "libio.h"
+#include "userInterface.h"
 #include "libstring.h"
+#include "libio.h"
 
 typedef struct myCommand {
     char name[80];
