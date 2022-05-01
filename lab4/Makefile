@@ -1,6 +1,6 @@
 CROSS_COMPILE=
 ASM_FLAGS= -m32 --pipe -Wall -fasm -g -O1 -fno-stack-protector	
-C_FLAGS =  -m32 -fno-stack-protector -g
+C_FLAGS =  -m32 -fno-stack-protector -g -fno-builtin
 OS_INCLUDE_PATH = myOS/include 
 USER_INCLUDE_PATH = userApp/include
 

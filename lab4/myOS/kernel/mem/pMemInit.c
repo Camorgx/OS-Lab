@@ -2,7 +2,8 @@
 #include "mem.h"
 unsigned long pMemStart;//可用的内存的起始地址
 unsigned long pMemSize;//可用的大小
-unsigned long pMemHandler;
+unsigned long kernelMemHandler;
+unsigned long userMemHandler;
 
 void memTest(unsigned long start, unsigned long grainSize){
 	/*本函数需要实现！！！*/
@@ -47,6 +48,6 @@ void pMemInit(void) {
 		pMemSize -= _end_addr - pMemStart;
 		pMemStart = _end_addr;
 	}
-
-	pMemHandler = dPartitionInit(pMemStart,pMemSize);	
+    kernelMemHandler = dPartitionInit(pMemStart, pMemSize / 2);
+    userMemHandler = dPartitionInit(pMemStart + pMemSize / 2, pMemSize - pMemSize / 2);
 }

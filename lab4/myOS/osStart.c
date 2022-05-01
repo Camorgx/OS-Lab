@@ -17,14 +17,14 @@ void osStart(void)
 	
     clear_screen();
 
-    /*pMemInit();  //after this, we can use kmalloc/kfree and malloc/free
-
+    pMemInit();  //after this, we can use kmalloc/kfree and malloc/free
+    myPrintk(0x2, "OS Started.\n");
 	{
-		unsigned long tmp = dPartitionAlloc(pMemHandler,100);
-		dPartitionWalkByAddr(pMemHandler);
-		dPartitionFree(pMemHandler,tmp);
-		dPartitionWalkByAddr(pMemHandler);
-	}*/
+		unsigned long tmp = dPartitionAlloc(kernelMemHandler,100);
+		dPartitionWalkByAddr(kernelMemHandler);
+		dPartitionFree(kernelMemHandler,tmp);
+		dPartitionWalkByAddr(kernelMemHandler);
+	}
 
     myPrintk(0x2, "START RUNNING......\n");
     myMain();
