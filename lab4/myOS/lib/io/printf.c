@@ -2,11 +2,8 @@
 #include "uart.h"
 #include "libio.h"
 
-/* 内核 print 函数
- * 调用已经完成的 vga 和 串口 输出接口，补全此函数
- * 禁止修改此函数接口 */
 char kBuf[400];
-int myPrintk(int color, const char *format, ...) {
+int printk(int color, const char *format, ...) {
     for (int i = 0; i < 400; ++i)
         kBuf[i] = '\0';
     va_list args;
@@ -24,11 +21,8 @@ int myPrintk(int color, const char *format, ...) {
     return cnt;
 }
 
-/* 用户 print 函数
- * 调用已经完成的 vga 和 串口 输出接口，补全此函数
- * 禁止修改此函数接口 */
 char uBuf[400];
-int myPrintf(int color, const char *format, ...) {
+int printf(int color, const char *format, ...) {
     for (int i = 0; i < 400; ++i)
         kBuf[i] = '\0';
     va_list args;

@@ -7,7 +7,7 @@ typedef struct dPartition {
 } dPartition;	// 共占 8 个字节
 
 void show_dPartition(struct dPartition *dp) {
-	myPrintk(0x5,"dPartition(start=0x%x, size=0x%x, firstFreeStart=0x%x)\n", dp, dp->size,dp->firstFreeStart);
+	printk(0x5,"dPartition(start=0x%x, size=0x%x, firstFreeStart=0x%x)\n", dp, dp->size,dp->firstFreeStart);
 }
 
 // EMB 是每一个block的数据结构
@@ -20,7 +20,7 @@ typedef struct EMB {
 } EMB;	// 共占20个字节
 
 void showEMB(struct EMB * emb) {
-	myPrintk(0x3,"EMB(start=%p, free=%d, size=0x%x, nextStart=%p, prevStart=%p)\n",
+	printk(0x3,"EMB(start=%p, free=%d, size=0x%x, nextStart=%p, prevStart=%p)\n",
              emb, emb->free, emb->size, emb->nextStart, emb->prevStart);
 }
 

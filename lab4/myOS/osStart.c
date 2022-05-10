@@ -6,7 +6,7 @@
 #include "mem.h"
 #include "libmem.h"
 
-extern void myMain(void);
+extern void main(void);
 
 void osStart(void)
 {
@@ -17,8 +17,8 @@ void osStart(void)
     pMemInit();  //after this, we can use kmalloc/kfree and malloc/free
     clear_screen();
 
-    myPrintk(0x2, "START RUNNING......\n");
-    myMain();
-    myPrintk(0x2, "STOP RUNNING......ShutDown\n");
+    printk(0x2, "START RUNNING......\n");
+    main();
+    printk(0x2, "STOP RUNNING......ShutDown\n");
     while (1);
 }

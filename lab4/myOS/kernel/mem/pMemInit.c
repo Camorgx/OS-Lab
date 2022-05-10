@@ -35,15 +35,15 @@ void memTest(unsigned long start, unsigned long grainSize) {
         pMemSize += grainSize;
         p = p_end + 1;
     }
-    myPrintk(0x7,"MemStart: %x  \n", pMemStart);
-    myPrintk(0x7,"MemSize:  %x  \n", pMemSize);
+    printk(0x7,"MemStart: %x  \n", pMemStart);
+    printk(0x7,"MemSize:  %x  \n", pMemSize);
 }
 
 extern unsigned long _end;
 void pMemInit(void) {
 	unsigned long _end_addr = (unsigned long) &_end;
 	memTest(0x100000,0x1000);
-	myPrintk(0x7,"_end:  %x  \n", _end_addr);
+	printk(0x7,"_end:  %x  \n", _end_addr);
 	if (pMemStart <= _end_addr) {
 		pMemSize -= _end_addr - pMemStart;
 		pMemStart = _end_addr;

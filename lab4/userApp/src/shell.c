@@ -41,13 +41,13 @@ void addNewCmd(const char *cmd, int (*func)(int argc, char (*argv)[8]),
 
 int func_cmd(int argc, char (*argv)[8]) {
     for (command_list* p = head->next; p; p = p->next)
-        myPrintf(0x7, "%s ", p->command->name);
-    myPrintf(0x7, "\n");
+        printf(0x7, "%s ", p->command->name);
+    printf(0x7, "\n");
     return 0;
 }
 
 void help_help(void) {
-    myPrintf(0x7, "USAGE: help [cmd]\n");
+    printf(0x7, "USAGE: help [cmd]\n");
 }
 
 int func_help(int argc, char (*argv)[8]) {
@@ -57,11 +57,11 @@ int func_help(int argc, char (*argv)[8]) {
     }
     for (command_list* p = head->next; p; p = p->next)
         if (strcmp(argv[1], p->command->name) == 0) {
-            myPrintf(0x7, "%s\n", p->command->description);
+            printf(0x7, "%s\n", p->command->description);
             if (p->command->help_func) p->command->help_func();
             return 0;
         }
-    myPrintf(0x7, "Command %s not found!\n", argv[1]);
+    printf(0x7, "Command %s not found!\n", argv[1]);
     return 1;
 }
 
@@ -96,10 +96,10 @@ void startShell(void) {
 
     do {
         BUF_len = 0; 
-        myPrintf(0x07, "Student>>");
+        printf(0x07, "Student>>");
         while((BUF[BUF_len] = uart_get_char()) != '\r')
-            myPrintf(0x7, "%c", BUF[BUF_len++]);
-        myPrintf(0x7, "\n");
+            printf(0x7, "%c", BUF[BUF_len++]);
+        printf(0x7, "\n");
         BUF[BUF_len] = '\0';
 
         char argv[8][8];
@@ -114,7 +114,7 @@ void startShell(void) {
             }
             if (strcmp(argv[0], "exit") == 0) return;
         }
-        if (!flag) myPrintf(0x7, "Command %s not found!\n", argv[0]);
+        if (!flag) printf(0x7, "Command %s not found!\n", argv[0]);
     } while(1);
 }
 

@@ -7,7 +7,7 @@ typedef struct EEB {
 } EEB;	// 占 4 个字节
 
 void showEEB(struct EEB *eeb) {
-	myPrintk(0x7,"EEB(start=0x%x, free=%d, next=0x%x)\n", eeb, eeb->free, eeb->next_start);
+	printk(0x7,"EEB(start=0x%x, free=%d, next=0x%x)\n", eeb, eeb->free, eeb->next_start);
 }
 
 // eFPartition 是表示整个内存的数据结构
@@ -18,7 +18,7 @@ typedef struct eFPartition{
 } eFPartition;	// 占 12 个字节
 
 void show_eFPartition(struct eFPartition *efp){
-	myPrintk(0x5,"eFPartition(start=0x%x, totalN=0x%x, perSize=0x%x, firstFree=0x%x)\n",
+	printk(0x5,"eFPartition(start=0x%x, totalN=0x%x, perSize=0x%x, firstFree=0x%x)\n",
              efp, efp->totalN, efp->perSize, efp->firstFree);
 }
 
