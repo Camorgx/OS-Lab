@@ -46,7 +46,15 @@ int func_cmd(int argc, char (*argv)[8]) {
     return 0;
 }
 
+void help_help(void) {
+    myPrintf(0x7, "USAGE: help [cmd]\n");
+}
+
 int func_help(int argc, char (*argv)[8]) {
+    if (argc == 1) {
+        help_help();
+        return 0;
+    }
     for (command_list* p = head->next; p; p = p->next)
         if (strcmp(argv[1], p->command->name) == 0) {
             myPrintf(0x7, "%s\n", p->command->description);
@@ -55,10 +63,6 @@ int func_help(int argc, char (*argv)[8]) {
         }
     myPrintf(0x7, "Command %s not found!\n", argv[1]);
     return 1;
-}
-
-void help_help(void) {
-    myPrintf(0x7, "USAGE: help [cmd]\n");
 }
 
 int func_exit(int argc, char (*argv)[8]) { return 0; }
