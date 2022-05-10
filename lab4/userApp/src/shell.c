@@ -6,7 +6,7 @@
 typedef struct myCommand {
     char *name;
     char *description;
-    int (*func)(int argc, char (*argv)[8]);
+    int (*func)(int argc, char (*argv)[32]);
     void (*help_func)(void);
 } myCommand;
 
@@ -23,7 +23,7 @@ unsigned cmd_cnt = 0;
     1.使用malloc创建一个cm的结构体，新增命令。
     2.同时还需要维护一个表头为head的链表。
 */
-void addNewCmd(const char *cmd, int (*func)(int argc, char (*argv)[8]),
+void addNewCmd(const char *cmd, int (*func)(int argc, char (*argv)[32]),
                void (*help_func)(void), const char* description) {
     myCommand* command = (myCommand*) malloc(sizeof(myCommand));
     command->name = (char*) malloc((strlen(cmd) + 1) * sizeof(char));
@@ -39,7 +39,7 @@ void addNewCmd(const char *cmd, int (*func)(int argc, char (*argv)[8]),
     head->next = next;
 }
 
-int func_cmd(int argc, char (*argv)[8]) {
+int func_cmd(int argc, char (*argv)[32]) {
     for (command_list* p = head->next; p; p = p->next)
         printf(0x7, "%s ", p->command->name);
     printf(0x7, "\n");
@@ -50,7 +50,7 @@ void help_help(void) {
     printf(0x7, "USAGE: help [cmd]\n");
 }
 
-int func_help(int argc, char (*argv)[8]) {
+int func_help(int argc, char (*argv)[32]) {
     if (argc == 1) {
         help_help();
         return 0;
@@ -65,9 +65,9 @@ int func_help(int argc, char (*argv)[8]) {
     return 1;
 }
 
-int func_exit(int argc, char (*argv)[8]) { return 0; }
+int func_exit(int argc, char (*argv)[32]) { return 0; }
 
-void split(char ans[8][8], const char* line) {
+void split(char ans[8][32], const char* line) {
     int quote_cnt = 0;
     for (int i = 0; line[i] != '\0'; ++i)
         if (line[i] == '\"') ++quote_cnt;
@@ -102,7 +102,7 @@ void startShell(void) {
         printf(0x7, "\n");
         BUF[BUF_len] = '\0';
 
-        char argv[8][8];
+        char argv[8][32];
         split(argv, BUF);
         int argc = 0;
         for (int i = 0; argv[i][0] != '\0'; ++i) ++argc;

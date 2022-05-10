@@ -4,7 +4,7 @@
 #include "shell.h"
 #include "mem.h"
 
-int testCase1(int argc, char (*argv)[8]){  
+int testCase1(int argc, char (*argv)[32]){  
 	//======for malloc===============================
 	char*buf1 = (char*)malloc(19);
 	char*buf2 = (char*)malloc(24);
@@ -31,7 +31,7 @@ int testCase1(int argc, char (*argv)[8]){
 	return 0;
 }
 
-int testCase2(int argc, char (*argv)[8]){
+int testCase2(int argc, char (*argv)[32]){
 	//======for malloc===============================
 	char*buf1 = (char*)malloc(11);
 	char*buf2 = (char*)malloc(21);
@@ -58,7 +58,7 @@ int testCase2(int argc, char (*argv)[8]){
 	return 0;
 }
 
-int maxMallocSizeNow(int argc, char (*argv)[8]){
+int maxMallocSizeNow(int argc, char (*argv)[32]){
 	int i=0x1000;
 	unsigned long x;
 
@@ -73,7 +73,7 @@ int maxMallocSizeNow(int argc, char (*argv)[8]){
 }
 
 //======for dPartition===============================
-int testdP1(int argc, char (*argv)[8]){
+int testdP1(int argc, char (*argv)[32]){
 	unsigned long x,x1,xHandler;
 	int i, tsize = 0x100;
 	x = malloc(tsize); 
@@ -121,7 +121,7 @@ int testdP1(int argc, char (*argv)[8]){
 
 
 
-int testdP2(int argc, char (*argv)[8]){
+int testdP2(int argc, char (*argv)[32]){
 	unsigned long x,x1,x2,x3,xHandler;
 	int i, tsize = 0x100;
 	x = malloc(tsize); 
@@ -173,7 +173,7 @@ int testdP2(int argc, char (*argv)[8]){
 	} else printf(0x7,"MALLOC FAILED, CAN't TEST dPartition\n");	
 }
 
-int testeFP(int argc, char (*argv)[8]){
+int testeFP(int argc, char (*argv)[32]){
 	unsigned long i=0x1000;//int
 	unsigned long x,x1,x2,x3,x4,x5,xHandler;
 	unsigned long psize = 31;//int
@@ -248,7 +248,7 @@ int testeFP(int argc, char (*argv)[8]){
 	return 0;
 }
 
-int testdP3(int argc, char (*argv)[8]){
+int testdP3(int argc, char (*argv)[32]){
 	unsigned long x,x1,x2,x3,xHandler;
 	int i, tsize = 0x100;
 	x = malloc(tsize); 
