@@ -14,8 +14,9 @@ void osStart(void)
 	init8253();
 	tick();
 	enable_interrupt();
-    pMemInit();  //after this, we can use kmalloc/kfree and malloc/free
     clear_screen();
+
+    pMemInit();  //after this, we can use kmalloc/kfree and malloc/free
 
     printk(0x2, "START RUNNING......\n");
     main();

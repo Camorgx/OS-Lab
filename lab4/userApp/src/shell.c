@@ -106,6 +106,7 @@ void startShell(void) {
         split(argv, BUF);
         int argc = 0;
         for (int i = 0; argv[i][0] != '\0'; ++i) ++argc;
+        if (argc == 0) continue;
         int flag = 0;
         for (command_list* p = head->next; p; p = p->next) {
             if (strcmp(argv[0], p->command->name) == 0) {

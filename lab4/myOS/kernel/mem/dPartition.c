@@ -70,7 +70,7 @@ unsigned long dPartitionAllocFirstFit(unsigned long dp, unsigned long size) {
     int flag = 0;
     for (; emb; emb = emb->nextStart) {
         if (emb->size >= size + sizeof(EMB)
-            | emb->size == size) { flag = 1; break; }
+            || emb->size == size) { flag = 1; break; }
     }
     if (!flag) return 0;
     if (emb->size == size) {
@@ -80,10 +80,10 @@ unsigned long dPartitionAllocFirstFit(unsigned long dp, unsigned long size) {
         emb->free = 0;
     }
     else {
-        emb->size = size; emb->free = 0;
         unsigned long new_emb_pos = (unsigned long)(emb + 1) + size;
         *(EMB*)(new_emb_pos) = (EMB){.size = emb->size - size - sizeof(EMB), .free = 1,
                 .nextStart = emb->nextStart, .prev = emb, .prevStart = emb->prevStart};
+        emb->size = size; emb->free = 0;
         if (emb->prevStart == 0) d_par->firstFreeStart = new_emb_pos;
         else emb->prevStart->nextStart = (EMB*)new_emb_pos;
     }
@@ -101,13 +101,15 @@ unsigned long dPartitionAllocFirstFit(unsigned long dp, unsigned long size) {
 unsigned long dPartitionFreeFirstFit(unsigned long dp, unsigned long start) {
     unsigned long max_len = dp + ((dPartition*)dp)->size + sizeof(dPartition);
 	if (start >= max_len) return 1;
+    dPartition* dP = (dPartition*)dp;
     EMB* emb = (EMB*)start - 1;
     if (emb->free) return 1;
     EMB* next = (EMB*)(start + emb->size);
     if (start + emb->size < max_len && next->free) {
         // First remove the next block.
-        next->prevStart->nextStart = next->nextStart;
-        next->nextStart->prevStart = next->prevStart;
+        if (next->prevStart) next->prevStart->nextStart = next->nextStart;
+        else dP->firstFreeStart = 0;
+        if (next->nextStart) next->nextStart->prevStart = next->prevStart;
         // Merge the next block into the current one.
         emb->size += sizeof(EMB) + next->size;
         if ((unsigned long)next + next->size + sizeof(EMB) < max_len)
@@ -121,7 +123,7 @@ unsigned long dPartitionFreeFirstFit(unsigned long dp, unsigned long start) {
     }
     else {
         // Insert emb to the head of the list.
-        emb->nextStart = (EMB*)(((dPartition*)dp)->firstFreeStart);
+        emb->nextStart = (EMB*)(dP->firstFreeStart);
         emb->prevStart = 0;
         emb->prev = 0;
         emb->free = 1;

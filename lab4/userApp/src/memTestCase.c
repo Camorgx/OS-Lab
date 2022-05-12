@@ -93,7 +93,7 @@ int testdP1(int argc, char (*argv)[32]){
 			if(x1) {	
 				printf(0x5, "success(addr=0x%x)!",x1);
 				dPartitionFree(xHandler,x1);
-				printf(0x7, "......Relaesed;\n");
+				printf(0x7, "......Released;\n");
 			} else {
 				printf(0x5, "failed!\n");
 				break;
@@ -109,7 +109,7 @@ int testdP1(int argc, char (*argv)[32]){
 			if(x1) {	
 				printf(0x5, "success(addr=0x%x)!",x1);
 				dPartitionFree(xHandler,x1);
-				printf(0x7, "......Relaesed;\n");
+				printf(0x7, "......Released;\n");
 			} else printf(0x5, "failed!\n");
 			
 			i >>= 1;

@@ -5,6 +5,8 @@
 
 #include "wallClock.h"
 #include "uart.h"
+#include "libmem.h"
+#include "libio.h"
 #include "vga.h"
 
 #ifndef NULL
