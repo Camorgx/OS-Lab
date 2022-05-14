@@ -1,10 +1,8 @@
-#include "userInterface.h"
-#include "libmem.h"
-#include "libio.h"
-#include "shell.h"
-#include "mem.h"
+#include "../../myOS/include/userInterface.h"
+#include "../include/shell.h"
+#include "../../myOS/include/mem.h"
 
-int testCase1(int argc, char (*argv)[32]){  
+int testCase1(UNUSED int argc, UNUSED char (*argv)[32]){  
 	//======for malloc===============================
 	char*buf1 = (char*)malloc(19);
 	char*buf2 = (char*)malloc(24);
@@ -31,7 +29,7 @@ int testCase1(int argc, char (*argv)[32]){
 	return 0;
 }
 
-int testCase2(int argc, char (*argv)[32]){
+int testCase2(UNUSED int argc, UNUSED char (*argv)[32]){
 	//======for malloc===============================
 	char*buf1 = (char*)malloc(11);
 	char*buf2 = (char*)malloc(21);
@@ -58,7 +56,7 @@ int testCase2(int argc, char (*argv)[32]){
 	return 0;
 }
 
-int maxMallocSizeNow(int argc, char (*argv)[32]){
+int maxMallocSizeNow(UNUSED int argc, UNUSED char (*argv)[32]){
 	int i=0x1000;
 	unsigned long x;
 
@@ -73,17 +71,17 @@ int maxMallocSizeNow(int argc, char (*argv)[32]){
 }
 
 //======for dPartition===============================
-int testdP1(int argc, char (*argv)[32]){
+int test_dP1(UNUSED int argc, UNUSED char (*argv)[32]){
 	unsigned long x,x1,xHandler;
-	int i, tsize = 0x100;
-	x = malloc(tsize); 
+	int i, t_size = 0x100;
+	x = malloc(t_size);
 	if (x){
 		printf(0x7, "We had successfully ");
 		printf(0x5, "malloc()");
-		printf(0x7, " a small memBlock (size=0x%x, addr=0x%x);\n", tsize,x);
+		printf(0x7, " a small memBlock (size=0x%x, addr=0x%x);\n", t_size, x);
 
 		printf(0x7, "It is initialized as a very small dPartition;\n");
-		xHandler = dPartitionInit(x,tsize);
+		xHandler = dPartitionInit(x, t_size);
 		dPartitionWalkByAddr(x);
 
 		i=0x10;
@@ -121,17 +119,17 @@ int testdP1(int argc, char (*argv)[32]){
 
 
 
-int testdP2(int argc, char (*argv)[32]){
+int test_dP2(UNUSED int argc, UNUSED char (*argv)[32]){
 	unsigned long x,x1,x2,x3,xHandler;
-	int i, tsize = 0x100;
-	x = malloc(tsize); 
+	int t_size = 0x100;
+	x = malloc(t_size); 
 	if (x){
 		printf(0x7, "We had successfully ");
 		printf(0x5, "malloc()");
-		printf(0x7, " a small memBlock (size=0x%x, addr=0x%x);\n", tsize,x);
+		printf(0x7, " a small memBlock (size=0x%x, addr=0x%x);\n", t_size, x);
 
 		printf(0x7, "It is initialized as a very small dPartition;\n");
-		xHandler = dPartitionInit(x,tsize);
+		xHandler = dPartitionInit(x, t_size);
 		dPartitionWalkByAddr(x);
 
 		printf(0x7,"Now, A:B:C:- ==> -:B:C:- ==> -:C- ==> - .\n");
@@ -173,23 +171,22 @@ int testdP2(int argc, char (*argv)[32]){
 	} else printf(0x7,"MALLOC FAILED, CAN't TEST dPartition\n");	
 }
 
-int testeFP(int argc, char (*argv)[32]){
-	unsigned long i=0x1000;//int
+int test_eFP(UNUSED int argc, UNUSED char (*argv)[32]) {
 	unsigned long x,x1,x2,x3,x4,x5,xHandler;
-	unsigned long psize = 31;//int
+	unsigned long p_size = 31;//int
 	unsigned long n = 4;//int
-	unsigned long tsize;//int
+	unsigned long t_size;//int
 	//======for eFPartition===============================
 	
-	tsize = eFPartitionTotalSize(psize,n);
-	x = malloc(tsize); printf(0x7,"X:0x%x:%d \n",x,tsize);
+	t_size = eFPartitionTotalSize(p_size, n);
+	x = malloc(t_size); printf(0x7, "X:0x%x:%d \n", x, t_size);
 	if (x) {
 		printf(0x7, "We had successfully ");
 		printf(0x5, "malloc()");
-		printf(0x7, " a small memBlock (size=0x%x, addr=0x%x);\n", tsize,x);
+		printf(0x7, " a small memBlock (size=0x%x, addr=0x%x);\n", t_size, x);
 
 		printf(0x7, "It is initialized as a very small ePartition;\n");
-		xHandler = eFPartitionInit(x,psize,n);
+		xHandler = eFPartitionInit(x, p_size, n);
 
 		eFPartitionWalkByAddr(xHandler);
 
@@ -248,17 +245,17 @@ int testeFP(int argc, char (*argv)[32]){
 	return 0;
 }
 
-int testdP3(int argc, char (*argv)[32]){
+int test_dP3(UNUSED int argc, UNUSED char (*argv)[32]){
 	unsigned long x,x1,x2,x3,xHandler;
-	int i, tsize = 0x100;
-	x = malloc(tsize); 
+	int t_size = 0x100;
+	x = malloc(t_size);
 	if (x){
 		printf(0x7, "We had successfully ");
 		printf(0x5, "malloc()");
-		printf(0x7, " a small memBlock (size=0x%x, addr=0x%x);\n", tsize,x);
+		printf(0x7, " a small memBlock (size=0x%x, addr=0x%x);\n", t_size, x);
 
 		printf(0x7, "It is initialized as a very small dPartition;\n");
-		xHandler = dPartitionInit(x,tsize);
+		xHandler = dPartitionInit(x, t_size);
 		dPartitionWalkByAddr(x);
 
 		printf(0x7,"Now, A:B:C:- ==> -:B:C:- ==> -:C- ==> - .\n");
@@ -305,9 +302,9 @@ void memTestCaseInit(void){
 	addNewCmd("testMalloc2\0", testCase2, NULL, "Malloc, write and read.\0");		
 	addNewCmd("maxMallocSizeNow\0", maxMallocSizeNow, NULL, "MAX_MALLOC_SIZE always changes. What's the value Now?\0");
 
-	addNewCmd("testdP1\0", testdP1, NULL, "Init a dPatition(size=0x100) [Alloc,Free]* with step = 0x20\0");
-	addNewCmd("testdP2\0", testdP2, NULL, "Init a dPatition(size=0x100) A:B:C:- ==> -:B:C:- ==> -:C:- ==> - .\0");
-	addNewCmd("testdP3\0", testdP3, NULL, "Init a dPatition(size=0x100) A:B:C:- ==> A:B:- ==> A:- ==> - .\0");
-	
-	addNewCmd("testeFP\0", testeFP, NULL, "Init a eFPatition. Alloc all and Free all.\0");
+    addNewCmd("testdP1\0", test_dP1, NULL, "Init a dPartition(size=0x100) [Alloc,Free]* with step = 0x20\0");
+    addNewCmd("testdP2\0", test_dP2, NULL, "Init a dPartition(size=0x100) A:B:C:- ==> -:B:C:- ==> -:C:- ==> - .\0");
+    addNewCmd("testdP3\0", test_dP3, NULL, "Init a dPartition(size=0x100) A:B:C:- ==> A:B:- ==> A:- ==> - .\0");
+
+    addNewCmd("testeFP\0", test_eFP, NULL, "Init a eFPartition. Alloc all and Free all.\0");
 }

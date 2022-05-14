@@ -1,6 +1,5 @@
 #include "userInterface.h"
 #include "shell.h"
-#include "mem.h"
 
 #define MEM_TEST
 #ifdef MEM_TEST

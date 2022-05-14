@@ -13,4 +13,8 @@
 #define NULL ((void*)0)
 #endif // NULL
 
+#ifndef UNUSED
+#define UNUSED __attribute__((unused))
+#endif // UNUSED
+
 #endif // LAB4_USERINTERFACE_H

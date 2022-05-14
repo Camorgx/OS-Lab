@@ -42,7 +42,7 @@ void eFPartitionWalkByAddr(unsigned long efpHandler) {
 */
 const unsigned long align = 4;
 unsigned long eFPartitionTotalSize(unsigned long perSize, unsigned long n) {
-	unsigned long size = (perSize / 4 + 1) * 4 + sizeof(EEB);
+	unsigned long size = (perSize / align + 1) * align + sizeof(EEB);
     return size * n + sizeof(eFPartition);
 }
 

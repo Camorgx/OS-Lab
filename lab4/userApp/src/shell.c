@@ -12,11 +12,10 @@ typedef struct myCommand {
 
 typedef struct command_list {
     myCommand* command;
-    struct command_list* prev, * next;
+    struct command_list* next;
 } command_list;
 
 command_list* head;
-unsigned cmd_cnt = 0;
 
 /*
     功能：增加命令
@@ -33,13 +32,12 @@ void addNewCmd(const char *cmd, int (*func)(int argc, char (*argv)[32]),
     command->description = (char*) malloc((strlen(description) + 1) * sizeof(char));
     memcpy(command->description, description, (strlen(description) + 1) * sizeof(char));
     command_list* next = (command_list*) malloc(sizeof(command_list));
-    next->prev = head;
     next->next = head->next;
     next->command = command;
     head->next = next;
 }
 
-int func_cmd(int argc, char (*argv)[32]) {
+int func_cmd(UNUSED int argc, UNUSED char (*argv)[32]) {
     for (command_list* p = head->next; p; p = p->next)
         printf(0x7, "%s ", p->command->name);
     printf(0x7, "\n");
@@ -65,7 +63,12 @@ int func_help(int argc, char (*argv)[32]) {
     return 1;
 }
 
-int func_exit(int argc, char (*argv)[32]) { return 0; }
+int func_exit(UNUSED int argc, UNUSED char (*argv)[32]) { return 0; }
+
+int func_clear(UNUSED int argc, UNUSED char (*argv)[32]) {
+    clear_screen();
+    return 0;
+}
 
 void split(char ans[8][32], const char* line) {
     int quote_cnt = 0;
@@ -77,7 +80,6 @@ void split(char ans[8][32], const char* line) {
     }
     int cnt = 0, cnt_p = 0;
     int in_quote = 0;
-    int num = 8, num_p = 8;
     for (int i = 0; line[i] != '\0'; ++i) {
         if (line[i] == '\"') in_quote = !in_quote;
         else if (!in_quote && line[i] == ' ' && cnt) {
@@ -92,7 +94,7 @@ void split(char ans[8][32], const char* line) {
 void startShell(void) {
     //我们通过串口来实现数据的输入
     char BUF[64] = {0}; //输入缓存区
-    int BUF_len = 0;	//输入缓存区的长度
+    int BUF_len;	//输入缓存区的长度
 
     do {
         BUF_len = 0; 
@@ -123,4 +125,5 @@ void initShell(void) {
     addNewCmd("cmd", func_cmd, NULL, "Display all commands.");
     addNewCmd("help", func_help, help_help, "Get help of a certain command.");
     addNewCmd("exit", func_exit, NULL, "Exit the shell.");
+    addNewCmd("clear", func_clear, NULL, "Clear screen.");
 }

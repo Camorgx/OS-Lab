@@ -50,7 +50,7 @@ unsigned long dPartitionInit(unsigned long start, unsigned long totalSize) {
 void dPartitionWalkByAddr(unsigned long dp) {
     dPartition* d_par =(dPartition*)dp;
     show_dPartition(d_par);
-    for (unsigned long i = dp + sizeof(dPartition); i - dp - sizeof(dPartition) <= d_par->size;
+    for (unsigned long i = dp + sizeof(dPartition); i - dp - sizeof(dPartition) < d_par->size;
         i = ((EMB*)i)->size + i + sizeof(EMB))
         showEMB((EMB*)i);
 }
