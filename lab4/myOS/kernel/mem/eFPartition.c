@@ -13,24 +13,29 @@ void showEEB(struct EEB *eeb) {
 // eFPartition 是表示整个内存的数据结构
 typedef struct eFPartition{
 	unsigned long totalN;
+    unsigned long freeN;
 	unsigned long perSize;  // unit: byte
 	unsigned long firstFree;
 } eFPartition;	// 占 12 个字节
 
 void show_eFPartition(struct eFPartition *efp){
-	printk(0x5,"eFPartition(start=0x%x, totalN=0x%x, perSize=0x%x, firstFree=0x%x)\n",
-             efp, efp->totalN, efp->perSize, efp->firstFree);
+	printk(0x5,"eFPartition(start=0x%x, totalN=0x%x, freeN=0x%x, perSize=0x%x, firstFree=0x%x)\n",
+             efp, efp->totalN, efp->freeN, efp->perSize, efp->firstFree);
 }
 
 /*
     功能：本函数是为了方便查看和调试的。
         1、打印 eFPartition 结构体的信息，可以调用上面的 show_eFPartition 函数。
-        2、遍历每一个 EEB，打印出他们的地址以及下一个 EEB 的地址（可以调用上面的函数 showEEB）
+        2、遍历每一个 EEB，打印出他们的地址以及下一个空闲的 EEB 的地址（可以调用上面的函数 showEEB）
 */
 void eFPartitionWalkByAddr(unsigned long efpHandler) {
-    show_eFPartition((eFPartition*)efpHandler);
-    for (unsigned long eeb = efpHandler + sizeof(eFPartition); eeb; eeb = ((EEB*)eeb)->next_start)
+    eFPartition * efp = (eFPartition*)efpHandler;
+    show_eFPartition(efp);
+    unsigned long eeb = efpHandler + sizeof(eFPartition);
+    for (unsigned long i = 0; i < efp->totalN; ++i) {
         showEEB((EEB*)eeb);
+        eeb += efp->perSize + sizeof(EEB);
+    }
 }
 
 /*
@@ -59,11 +64,11 @@ unsigned long eFPartitionTotalSize(unsigned long perSize, unsigned long n) {
 */
 unsigned long eFPartitionInit(unsigned long start, unsigned long perSize, unsigned long n) {
     unsigned long pos = start + sizeof(eFPartition);
-    unsigned long size = (perSize / 4 + 1) * 4 + sizeof(EEB);
-    *((eFPartition*)start) = (eFPartition){.totalN = n, .perSize = size, .firstFree = pos};
+    unsigned long size = (perSize / 4 + 1) * 4;
+    *((eFPartition*)start) = (eFPartition){.totalN = n, .freeN = n, .perSize = size, .firstFree = pos};
     for (int i = 0; i < n; ++i) {
-        *((EEB*)pos) = (EEB){.free = 1, .next_start = (pos + size)};
-        pos += size;
+        *((EEB*)pos) = (EEB){.free = 1, .next_start = (pos + size + sizeof(EEB))};
+        pos += size + sizeof(EEB);
     }
     ((EEB*)(pos - size))->next_start = 0;
     return start;
@@ -79,12 +84,13 @@ unsigned long eFPartitionInit(unsigned long start, unsigned long perSize, unsign
 */
 unsigned long eFPartitionAlloc(unsigned long EFPHandler) {
 	eFPartition* efp = (eFPartition*)EFPHandler;
-    if (efp->totalN == 0) return 0; // No memory block available.
+    if (efp->freeN == 0) return 0; // No memory block available.
     unsigned long ans = efp->firstFree + sizeof(EEB);
     EEB* first = (EEB*)(efp->firstFree);
     first->free = 0;
     efp->firstFree = first->next_start;
-    --efp->totalN;
+    --efp->freeN;
+    if (efp->freeN == 0) efp->firstFree = 0;
     return ans;
 }
 
@@ -95,11 +101,11 @@ unsigned long eFPartitionAlloc(unsigned long EFPHandler) {
 */
 unsigned long eFPartitionFree(unsigned long EFPHandler,unsigned long mbStart) {
 	eFPartition* efp = (eFPartition*)EFPHandler;
-    EEB* eeb = (EEB*)(mbStart - 1);
+    EEB* eeb = (EEB*)(mbStart) - 1;
     if (eeb->free) return 1; // The block is already free.
     eeb->next_start = efp->firstFree;
     eeb->free = 1;
     efp->firstFree = (unsigned long)eeb;
-    ++efp->totalN;
+    ++efp->freeN;
     return 0;
 }
