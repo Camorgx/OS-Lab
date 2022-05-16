@@ -64,7 +64,7 @@ unsigned long eFPartitionTotalSize(unsigned long perSize, unsigned long n) {
 */
 unsigned long eFPartitionInit(unsigned long start, unsigned long perSize, unsigned long n) {
     unsigned long pos = start + sizeof(eFPartition);
-    unsigned long size = (perSize / 4 + 1) * 4;
+    unsigned long size = (perSize / align + 1) * align;
     *((eFPartition*)start) = (eFPartition){.totalN = n, .freeN = n, .perSize = size, .firstFree = pos};
     for (int i = 0; i < n; ++i) {
         *((EEB*)pos) = (EEB){.free = 1, .next_start = (pos + size + sizeof(EEB))};
