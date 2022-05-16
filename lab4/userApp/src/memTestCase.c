@@ -5,7 +5,9 @@
 int testCase1(UNUSED int argc, UNUSED char (*argv)[32]){  
 	//======for malloc===============================
 	char*buf1 = (char*)malloc(19);
+    //dPartitionWalkByAddr(userMemHandler);
 	char*buf2 = (char*)malloc(24);
+    //dPartitionWalkByAddr(userMemHandler);
 
 	for(int i=0;i<17;i++) *(buf1+i) = '*';
 	*(buf1+17) = '\n';
@@ -24,7 +26,9 @@ int testCase1(UNUSED int argc, UNUSED char (*argv)[32]){
 	printf(0x7,"\n");
 	
 	free((unsigned long)buf1);
+    //dPartitionWalkByAddr(userMemHandler);
 	free((unsigned long)buf2);
+    //dPartitionWalkByAddr(userMemHandler);
 
 	return 0;
 }

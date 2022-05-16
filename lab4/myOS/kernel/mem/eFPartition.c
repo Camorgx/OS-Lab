@@ -47,7 +47,7 @@ void eFPartitionWalkByAddr(unsigned long efpHandler) {
 */
 const unsigned long align = 4;
 unsigned long eFPartitionTotalSize(unsigned long perSize, unsigned long n) {
-	unsigned long size = (perSize / align + 1) * align + sizeof(EEB);
+	unsigned long size = ((perSize % align) ? ((perSize / align + 1) * align) : perSize) + sizeof(EEB);
     return size * n + sizeof(eFPartition);
 }
 
@@ -64,7 +64,7 @@ unsigned long eFPartitionTotalSize(unsigned long perSize, unsigned long n) {
 */
 unsigned long eFPartitionInit(unsigned long start, unsigned long perSize, unsigned long n) {
     unsigned long pos = start + sizeof(eFPartition);
-    unsigned long size = (perSize / align + 1) * align;
+    unsigned long size = ((perSize % align) ? ((perSize / align + 1) * align) : perSize);
     *((eFPartition*)start) = (eFPartition){.totalN = n, .freeN = n, .perSize = size, .firstFree = pos};
     for (int i = 0; i < n; ++i) {
         *((EEB*)pos) = (EEB){.free = 1, .next_start = (pos + size + sizeof(EEB))};

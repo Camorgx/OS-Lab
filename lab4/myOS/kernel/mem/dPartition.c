@@ -64,9 +64,11 @@ void dPartitionWalkByAddr(unsigned long dp) {
     注意的地方：
         1.EMB类型的数据的存在本身就占用了一定的空间。
 */
+extern unsigned long align;
 unsigned long dPartitionAllocFirstFit(unsigned long dp, unsigned long size) {
     dPartition* d_par = (dPartition*)dp;
     EMB* emb = (EMB*)(d_par->firstFreeStart);
+    if (size % align) size = (size / align + 1) * align;
     int flag = 0;
     for (; emb; emb = emb->nextStart) {
         if (emb->size >= size + sizeof(EMB)
@@ -127,7 +129,9 @@ unsigned long dPartitionFreeFirstFit(unsigned long dp, unsigned long start) {
         emb->prevStart = 0;
         emb->prev = 0;
         emb->free = 1;
-        ((dPartition*)dp)->firstFreeStart = (unsigned long)emb;
+        if (dP->firstFreeStart)
+            ((EMB*)(dP->firstFreeStart))->prevStart = emb;
+        dP->firstFreeStart = (unsigned long)emb;
     }
     return 0;
 }
