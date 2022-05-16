@@ -16,7 +16,7 @@ typedef struct eFPartition{
     unsigned long freeN;
 	unsigned long perSize;  // unit: byte
 	unsigned long firstFree;
-} eFPartition;	// 占 12 个字节
+} eFPartition;	// 占 16 个字节
 
 void show_eFPartition(struct eFPartition *efp){
 	printk(0x5,"eFPartition(start=0x%x, totalN=0x%x, freeN=0x%x, perSize=0x%x, firstFree=0x%x)\n",
