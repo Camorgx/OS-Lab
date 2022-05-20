@@ -20,7 +20,7 @@ void memTest(unsigned long start, unsigned long grainSize) {
     pMemStart = start;
     while (1) {
         int flag = 1;
-        unsigned short* p_end = p + grainSize - 1;
+        unsigned short* p_end = p + grainSize / 2 - 1;
         unsigned short src = *p, src_end = *p_end;
         *p = 0xAA55;
         if (*p != 0xAA55) flag = 0;
