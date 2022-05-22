@@ -122,6 +122,7 @@ void startShell(void) {
 }
 
 void initShell(void) {
+    head = (command_list*) malloc(sizeof(command_list));
     addNewCmd("cmd", func_cmd, NULL, "Display all commands.");
     addNewCmd("help", func_help, help_help, "Get help of a certain command.");
     addNewCmd("exit", func_exit, NULL, "Exit the shell.");
