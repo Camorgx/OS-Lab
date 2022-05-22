@@ -66,6 +66,7 @@ void dPartitionWalkByAddr(unsigned long dp) {
 */
 extern unsigned long align;
 unsigned long dPartitionAllocFirstFit(unsigned long dp, unsigned long size) {
+    if (size == 0) return 0;
     dPartition* d_par = (dPartition*)dp;
     EMB* emb = (EMB*)(d_par->firstFreeStart);
     if (size % align) size = (size / align + 1) * align;
