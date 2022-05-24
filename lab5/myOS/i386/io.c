@@ -1,4 +1,4 @@
-#include "io.h"
+#include "i386/io.h"
 
 // inb，从端口号为 port_from 的端口读取一个字节
 unsigned char inb(unsigned short int port_from) {

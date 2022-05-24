@@ -1,5 +1,5 @@
-#include "wallClock.h"
-#include "vga.h"
+#include "dev/wallClock.h"
+#include "dev/vga.h"
 
 const int hour_offset = VGA_SCREEN_HEIGHT * VGA_SCREEN_WIDTH + VGA_SCREEN_WIDTH - 8;
 extern int system_ticks;

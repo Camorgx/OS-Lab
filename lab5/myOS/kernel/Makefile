@@ -1,5 +1,4 @@
 include myOS/kernel/mem/Makefile
-KERNEL_OBJS = 	output/myOS/kernel/tick.o \
-				output/myOS/kernel/wallClock.o \
-				${MEM_OBJS}
+include myOS/kernel/scheduling/Makefile
+KERNEL_OBJS = ${MEM_OBJS} ${SCHEDULING_OBJS}
 		

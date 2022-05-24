@@ -1,6 +1,6 @@
-#include "../../myOS/include/userInterface.h"
-#include "../include/shell.h"
-#include "../../myOS/include/mem.h"
+#include "userInterface.h"
+#include "shell.h"
+#include "kernel/mem/mem.h"
 
 int testCase1(UNUSED int argc, UNUSED char (*argv)[32]){  
 	//======for malloc===============================

@@ -1,9 +1,9 @@
-#include "libio.h"
-#include "vga.h"
-#include "i8253.h"
-#include "i8259A.h"
-#include "tick.h"
-#include "mem.h"
+#include "lib/libio.h"
+#include "dev/vga.h"
+#include "dev/i8253.h"
+#include "dev/i8259A.h"
+#include "i386/tick.h"
+#include "kernel/mem/mem.h"
 
 extern void main(void);
 

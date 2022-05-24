@@ -1,5 +1,5 @@
-#include "io.h"
-#include "vga.h"
+#include "i386/io.h"
+#include "dev/vga.h"
 
 /* ========= 以下函数仅供参考，可以根据自己的需求进行修改，甚至删除 ========= */
 

@@ -1,5 +1,5 @@
-#include "tick.h"
-#include "wallClock.h"
+#include "i386/tick.h"
+#include "dev/wallClock.h"
 int system_ticks;
 
 void tick(void){

@@ -1,7 +1,5 @@
 #include "userInterface.h"
-#include "libstring.h"
-#include "libmem.h"
-#include "libio.h"
+#include "string.h"
 
 typedef struct myCommand {
     char *name;

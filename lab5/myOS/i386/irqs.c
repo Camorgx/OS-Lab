@@ -1,4 +1,4 @@
-#include "irqs.h" 
+#include "i386/irqs.h" 
 
 const int output_pos = VGA_SCREEN_HEIGHT * VGA_SCREEN_WIDTH;
 

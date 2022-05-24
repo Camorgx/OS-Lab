@@ -1,5 +1,5 @@
-#include "io.h"
-#include "uart.h"
+#include "i386/io.h"
+#include "dev/uart.h"
 
 #define UART_PORT 0x3F8 // 串口端口号
 

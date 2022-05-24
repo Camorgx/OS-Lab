@@ -1,5 +1,5 @@
-#include "libio.h"
-#include "mem.h"
+#include "lib/libio.h"
+#include "kernel/mem/mem.h"
 unsigned long pMemStart; //可用的内存的起始地址
 unsigned long pMemSize; //可用的大小
 unsigned long kernelMemHandler;

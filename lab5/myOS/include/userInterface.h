@@ -3,11 +3,11 @@
 
 #include <stdarg.h>
 
-#include "wallClock.h"
-#include "uart.h"
-#include "libmem.h"
-#include "libio.h"
-#include "vga.h"
+#include "dev/wallClock.h"
+#include "dev/uart.h"
+#include "lib/libmem.h"
+#include "lib/libio.h"
+#include "dev/vga.h"
 
 #ifndef NULL
 #define NULL ((void*)0)

@@ -1,6 +1,6 @@
-#include "../../include/vga.h"
-#include "../../include/uart.h"
-#include "../../include/libio.h"
+#include "dev/vga.h"
+#include "dev/uart.h"
+#include "lib/libio.h"
 
 char kBuf[400];
 int printk(int color, const char *format, ...) {
