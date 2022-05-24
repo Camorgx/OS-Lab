@@ -1,0 +1,4 @@
+#ifndef LAB5_SCHEDULER_H
+#define LAB5_SCHEDULER_H
+
+#endif //LAB5_SCHEDULER_H
