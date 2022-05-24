@@ -1,0 +1,1 @@
+LIB_MEM_OBJS = output/myOS/lib/mem/malloc.o
