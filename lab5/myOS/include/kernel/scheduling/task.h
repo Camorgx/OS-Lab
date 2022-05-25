@@ -7,7 +7,7 @@ extern void context_switch(unsigned long **prevTskStkAddr, unsigned long *nextTs
 typedef enum State {
     READY,
     WAITING
-} State;    
+} State;
 
 typedef struct tskPara {
     unsigned priority;
@@ -24,5 +24,13 @@ typedef struct TCB {
 
 #define NULL_TCB ((TCB){.tid = 0, .state = READY, .stack = 0, \
     .params = (tskPara){0, 0, 0}})
+
+extern int createTsk(void (*tskBody)(void));
+extern void destroyTsk(int tskIndex);
+
+extern void stack_init(unsigned long **stk, void (*task)(void));
+
+extern void tskStart(TCB *tsk);
+extern void tskEnd();
 
 #endif //LAB5_TASK_H
