@@ -13,7 +13,7 @@ typedef struct command_list {
     struct command_list* next;
 } command_list;
 
-command_list* head;
+command_list* cmd_list_head;
 
 /*
     功能：增加命令
@@ -30,13 +30,13 @@ void addNewCmd(const char *cmd, int (*func)(int argc, char (*argv)[32]),
     command->description = (char*) malloc((strlen(description) + 1) * sizeof(char));
     memcpy(command->description, description, (strlen(description) + 1) * sizeof(char));
     command_list* next = (command_list*) malloc(sizeof(command_list));
-    next->next = head->next;
+    next->next = cmd_list_head->next;
     next->command = command;
-    head->next = next;
+    cmd_list_head->next = next;
 }
 
 int func_cmd(UNUSED int argc, UNUSED char (*argv)[32]) {
-    for (command_list* p = head->next; p; p = p->next)
+    for (command_list* p = cmd_list_head->next; p; p = p->next)
         printf(0x7, "%s ", p->command->name);
     printf(0x7, "\n");
     return 0;
@@ -51,7 +51,7 @@ int func_help(int argc, char (*argv)[32]) {
         help_help();
         return 0;
     }
-    for (command_list* p = head->next; p; p = p->next)
+    for (command_list* p = cmd_list_head->next; p; p = p->next)
         if (strcmp(argv[1], p->command->name) == 0) {
             printf(0x7, "%s\n", p->command->description);
             if (p->command->help_func) p->command->help_func();
@@ -108,7 +108,7 @@ void startShell(void) {
         for (int i = 0; argv[i][0] != '\0'; ++i) ++argc;
         if (argc == 0) continue;
         int flag = 0;
-        for (command_list* p = head->next; p; p = p->next) {
+        for (command_list* p = cmd_list_head->next; p; p = p->next) {
             if (strcmp(argv[0], p->command->name) == 0) {
                 p->command->func(argc, argv);
                 flag = 1;
@@ -120,7 +120,7 @@ void startShell(void) {
 }
 
 void initShell(void) {
-    head = (command_list*) malloc(sizeof(command_list));
+    cmd_list_head = (command_list*) malloc(sizeof(command_list));
     addNewCmd("cmd", func_cmd, NULL, "Display all commands.");
     addNewCmd("help", func_help, help_help, "Get help of a certain command.");
     addNewCmd("exit", func_exit, NULL, "Exit the shell.");

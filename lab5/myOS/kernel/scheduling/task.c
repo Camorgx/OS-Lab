@@ -1,5 +1,6 @@
 #include "kernel/scheduling/task.h"
 #include "kernel/mem/mem.h"
+#include "lib/libmem.h"
 
 unsigned long **prevTSK_StackPtrAddr;
 unsigned long *nextTSK_StackPtr;
@@ -32,7 +33,7 @@ typedef struct task_list {
     struct task_list* next;
 } task_list;
 
-task_list* head;
+task_list* task_list_head;
 
 const unsigned long stack_size = 0x100000; // 1 M
 
@@ -40,24 +41,24 @@ unsigned tid_cnt = 1;
 int createTsk(void (*tskBody)(void)) {
     TCB tcb;
     tcb.tid = tid_cnt++;
-    tcb.stack = (unsigned long*) malloc(stack_size) + stack_size - 1;
+    tcb.stack = (unsigned long*) (malloc(stack_size) + stack_size - 1);
     tcb.state = WAITING;
     tcb.params = (tskPara) {.priority = 0, .arrTime = 0, .exeTime = 0};
     stack_init(&tcb.stack, tskBody);
     task_list* tmp = (task_list*) kmalloc(sizeof(task_list));
     tmp->data = tcb;
-    tmp->next = head->next;
-    head->next = tmp;
+    tmp->next = task_list_head->next;
+    task_list_head->next = tmp;
     return tcb.tid;
 }
 
 void destroyTsk(int tskIndex) {
-    task_list* tmp = head->next, * prev = head;
+    task_list* tmp = task_list_head->next, * prev = task_list_head;
     for (; tmp; tmp = tmp->next) {
         if (tmp->data.tid == tskIndex) {
-            free(tmp->data.stack + 1 - stack_size);
+            free((unsigned long)(tmp->data.stack) + 1 - stack_size);
             prev->next = tmp->next;
-            kfree(tmp);
+            kfree((unsigned long)tmp);
         }
         prev = tmp;
     }
