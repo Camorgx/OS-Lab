@@ -14,7 +14,8 @@ include userApp/Makefile
 OS_OBJS       = ${MYOS_OBJS} ${USER_APP_OBJS}
 
 output/myOS.elf: ${OS_OBJS} ${MULTI_BOOT_HEADER}
-	${CROSS_COMPILE}ld -n -T myOS/myOS.ld ${MULTI_BOOT_HEADER} ${OS_OBJS} -o output/myOS.elf
+	@${CROSS_COMPILE}ld -n -T myOS/myOS.ld ${MULTI_BOOT_HEADER} ${OS_OBJS} -o output/myOS.elf
+	@echo "Build finished successfully."
 
 output/%.o : %.S
 	@mkdir -p $(dir $@)
@@ -25,4 +26,5 @@ output/%.o : %.c
 	@${CROSS_COMPILE}gcc ${C_FLAGS} -I${OS_INCLUDE_PATH} -I ${USER_INCLUDE_PATH} -c -o $@ $<
 
 clean:
-	rm -rf output
+	@rm -rf output
+	@echo "Build directory removed."

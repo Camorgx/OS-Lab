@@ -1,3 +1,5 @@
+#include "kernel/scheduling/taskQueueFIFO.h"
+#include "kernel/scheduling/scheduler.h"
 #include "kernel/scheduling/task.h"
 #include "kernel/mem/mem.h"
 #include "lib/libmem.h"
@@ -28,17 +30,12 @@ void stack_init(unsigned long **stk, void (*task)(void)) {
     **stk = (unsigned long)0x77777777; // edi
 }
 
-typedef struct task_list {
-    TCB data;
-    struct task_list* next;
-} task_list;
-
 task_list* task_list_head;
 
 const unsigned long stack_size = 0x100000; // 1 M
 
 unsigned tid_cnt = 1;
-int createTsk(void (*tskBody)(void)) {
+unsigned createTsk(void (*tskBody)(void)) {
     TCB tcb;
     tcb.tid = tid_cnt++;
     tcb.stack = (unsigned long*) (malloc(stack_size) + stack_size - 1);
@@ -52,7 +49,7 @@ int createTsk(void (*tskBody)(void)) {
     return tcb.tid;
 }
 
-void destroyTsk(int tskIndex) {
+void destroyTsk(unsigned tskIndex) {
     task_list* tmp = task_list_head->next, * prev = task_list_head;
     for (; tmp; tmp = tmp->next) {
         if (tmp->data.tid == tskIndex) {
@@ -64,10 +61,18 @@ void destroyTsk(int tskIndex) {
     }
 }
 
-void tskStart(TCB *tsk) {
-
+unsigned current_tsk_index;
+unsigned long* current_ysk_stack;
+void tskStart(TCB* tsk) {
+    tsk->state = READY;
+    current_tsk_index = tsk->tid;
+    current_ysk_stack = tsk->stack;
+    qpush(&taskQueue, *tsk);
 }
 
 void tskEnd() {
-
+    destroyTsk(current_tsk_index);
+    qpop(&taskQueue);
+    current_ysk_stack = 0;
+    fifo_schedule();
 }

@@ -23,7 +23,7 @@ unsigned qpush(QUEUE_TYPE* queue, ITEM_TYPE tcb) {
             ITEM_TYPE* tmp = (ITEM_TYPE*) kmalloc(2 * queue->size);
             if (!tmp) return 1;
             memcpy(tmp, queue->data, queue->size * sizeof(ITEM_TYPE));
-            kfree(queue->data);
+            kfree((unsigned long)(queue->data));
             queue->data = tmp;
             queue->data[queue->tail++] = tcb;
             queue->size *= 2;
@@ -38,7 +38,7 @@ unsigned qpush(QUEUE_TYPE* queue, ITEM_TYPE tcb) {
         if (!tmp) return 1;
         memcpy(tmp, queue->data + queue->head, (queue->size - queue->head) * sizeof(ITEM_TYPE));
         memcpy(tmp + queue->size - queue->head, queue->data, queue->tail * sizeof(ITEM_TYPE));
-        kfree(queue->data);
+        kfree((unsigned long)(queue->data));
         queue->tail = queue->size; queue->head = 0;
         queue->size *= 2; queue->data = tmp;
         queue->data[queue->tail++] = tcb;

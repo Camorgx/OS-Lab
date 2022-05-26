@@ -22,15 +22,20 @@ typedef struct TCB {
     tskPara params;
 } TCB;
 
+typedef struct task_list {
+    TCB data;
+    struct task_list* next;
+} task_list;
+
 #define NULL_TCB ((TCB){.tid = 0, .state = READY, .stack = 0, \
     .params = (tskPara){0, 0, 0}})
 
-extern int createTsk(void (*tskBody)(void));
-extern void destroyTsk(int tskIndex);
+extern unsigned createTsk(void (*tskBody)(void));
+extern void destroyTsk(unsigned tskIndex);
 
 extern void stack_init(unsigned long **stk, void (*task)(void));
 
-extern void tskStart(TCB *tsk);
+extern void tskStart(TCB* tsk);
 extern void tskEnd();
 
 #endif //LAB5_TASK_H
