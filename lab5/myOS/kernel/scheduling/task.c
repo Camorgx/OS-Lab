@@ -62,17 +62,23 @@ void destroyTsk(unsigned tskIndex) {
 }
 
 unsigned current_tsk_index;
-unsigned long* current_ysk_stack;
-void tskStart(TCB* tsk) {
-    tsk->state = READY;
-    current_tsk_index = tsk->tid;
-    current_ysk_stack = tsk->stack;
-    qpush(&taskQueue, *tsk);
+unsigned long* current_tsk_stack;
+void tskStart(unsigned tskIndex) {
+    task_list* tmp = task_list_head->next;
+    for (; tmp; tmp = tmp->next) {
+        if (tmp->data.tid == tskIndex) break;
+    }
+    if (!tmp) return;
+    TCB tsk = tmp->data;
+    tsk.state = READY;
+    current_tsk_index = tsk.tid;
+    current_tsk_stack = tsk.stack;
+    qpush(&taskQueue, tsk);
 }
 
 void tskEnd() {
     destroyTsk(current_tsk_index);
     qpop(&taskQueue);
-    current_ysk_stack = 0;
-    fifo_schedule();
+    current_tsk_stack = 0;
+    schedule();
 }

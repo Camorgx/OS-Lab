@@ -27,6 +27,8 @@ typedef struct task_list {
     struct task_list* next;
 } task_list;
 
+extern task_list* task_list_head;
+
 #define NULL_TCB ((TCB){.tid = 0, .state = READY, .stack = 0, \
     .params = (tskPara){0, 0, 0}})
 
@@ -35,7 +37,7 @@ extern void destroyTsk(unsigned tskIndex);
 
 extern void stack_init(unsigned long **stk, void (*task)(void));
 
-extern void tskStart(TCB* tsk);
+extern void tskStart(unsigned tskIndex);
 extern void tskEnd();
 
 #endif //LAB5_TASK_H

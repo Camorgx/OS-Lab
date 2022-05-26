@@ -12,12 +12,6 @@ const unsigned initial_size = 8;
 
 // 以 head + 1 表示队列的第一个元素，tail - 1 表示队列的最后一个元素。
 unsigned qpush(QUEUE_TYPE* queue, ITEM_TYPE tcb) {
-    if (!queue->data) {
-        queue->data = (ITEM_TYPE*) kmalloc(initial_size * sizeof(ITEM_TYPE));
-        if (!queue->data) return 1;
-        queue->size = initial_size;
-    }
-        
     if (queue->tail == queue->size - 1) {
         if (queue->head == 0) {
             ITEM_TYPE* tmp = (ITEM_TYPE*) kmalloc(2 * queue->size);
