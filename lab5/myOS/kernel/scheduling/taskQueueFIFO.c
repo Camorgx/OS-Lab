@@ -1,5 +1,6 @@
 #include "kernel/scheduling/taskQueueFIFO.h"
 #include "kernel/mem/mem.h"
+#include "lib/libio.h"
 #include "string.h"
 
 taskQueueFIFO taskQueue;
@@ -9,6 +10,15 @@ const unsigned initial_size = 8;
 #define QUEUE_TYPE taskQueueFIFO
 #define ITEM_TYPE TCB
 #define NULL_ITEM NULL_TCB
+
+void display_queue(const taskQueueFIFO* queue) {
+    if (qempty(queue)) return;
+    unsigned pos = queue->head + 1;
+    while (pos != queue->tail) {
+        printf(0x7, "%d ", queue->data[pos].tid);
+        pos = (pos + 1) % queue->size;
+    }
+}
 
 // 以 head + 1 表示队列的第一个元素，tail - 1 表示队列的最后一个元素。
 unsigned qpush(QUEUE_TYPE* queue, ITEM_TYPE tcb) {

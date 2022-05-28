@@ -12,6 +12,8 @@ typedef struct taskQueueFIFO {
 extern taskQueueFIFO taskQueue;
 extern const unsigned initial_size;
 
+extern void display_queue(const taskQueueFIFO* queue);
+
 extern unsigned qpush(taskQueueFIFO* queue, TCB tcb);
 extern unsigned qpop(taskQueueFIFO* queue);
 extern TCB qfront(const taskQueueFIFO* queue);
