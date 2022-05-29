@@ -40,7 +40,7 @@ extern void destroyTsk(unsigned tskIndex);
 extern void stack_init(unsigned long **stk, void (*task)(void));
 
 extern void tskStart(unsigned tskIndex);
-extern void tskEnd();
+extern void tskEnd(void);
 
 extern unsigned current_tsk_index;
 extern unsigned long* current_tsk_stack;

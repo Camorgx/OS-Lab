@@ -77,11 +77,11 @@ void tskStart(unsigned tskIndex) {
     if (!tmp) return;
     TCB tsk = tmp->data;
     tsk.state = READY;
-    qpush(&taskQueue, tsk);
+    qPush(&taskQueue, tsk);
 }
 
-void tskEnd() {
+void tskEnd(void) {
     destroyTsk(current_tsk_index);
-    qpop(&taskQueue);
+    qPop(&taskQueue);
     schedule();
 }
