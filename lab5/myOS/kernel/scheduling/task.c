@@ -2,19 +2,22 @@
 #include "kernel/scheduling/scheduler.h"
 #include "kernel/scheduling/task.h"
 #include "kernel/mem/mem.h"
+#include "lib/libio.h"
 #include "lib/libmem.h"
 
 unsigned long **prevTSK_StackPtrAddr;
 unsigned long *nextTSK_StackPtr;
 
-void context_switch(unsigned long **prevTskStkAddr, unsigned long *nextTskStk) {
+void context_switch(unsigned long **prevTskStkAddr, unsigned long *nextTskStk,
+                    unsigned next_tsk_id) {
     prevTSK_StackPtrAddr = prevTskStkAddr;
     nextTSK_StackPtr = nextTskStk;
+    current_tsk_index = next_tsk_id;
+    current_tsk_stack = nextTskStk;
     CTX_SW();
 }
 
 void stack_init(unsigned long **stk, void (*task)(void)) {
-    *(*stk)-- = (unsigned long)0x08; // CS 
     *(*stk)-- = (unsigned long)tskEnd;
     *(*stk)-- = (unsigned long)task; // eip
     // pushf
@@ -38,10 +41,13 @@ unsigned tid_cnt = 1;
 unsigned createTsk(void (*tskBody)(void)) {
     TCB tcb;
     tcb.tid = tid_cnt++;
-    tcb.stack = (unsigned long*) (malloc(stack_size) + stack_size - 1);
+    tcb.malloced_pos = malloc(stack_size);
+    tcb.stack = (unsigned long*)(tcb.malloced_pos + stack_size) - 1;
+    // printf(0x7, "%d.stack = 0x%p\n", tcb.tid, tcb.stack);
     tcb.state = WAITING;
     tcb.params = (tskPara) {.priority = 0, .arrTime = 0, .exeTime = 0};
     stack_init(&tcb.stack, tskBody);
+    // dPartitionWalkByAddr(userMemHandler);
     task_list* tmp = (task_list*) kmalloc(sizeof(task_list));
     tmp->data = tcb;
     tmp->next = task_list_head->next;
@@ -53,7 +59,7 @@ void destroyTsk(unsigned tskIndex) {
     task_list* tmp = task_list_head->next, * prev = task_list_head;
     for (; tmp; tmp = tmp->next) {
         if (tmp->data.tid == tskIndex) {
-            free((unsigned long)(tmp->data.stack) + 1 - stack_size);
+            free(tmp->data.malloced_pos);
             prev->next = tmp->next;
             kfree((unsigned long)tmp);
         }
@@ -71,14 +77,11 @@ void tskStart(unsigned tskIndex) {
     if (!tmp) return;
     TCB tsk = tmp->data;
     tsk.state = READY;
-    current_tsk_index = tsk.tid;
-    current_tsk_stack = tsk.stack;
     qpush(&taskQueue, tsk);
 }
 
 void tskEnd() {
     destroyTsk(current_tsk_index);
     qpop(&taskQueue);
-    current_tsk_stack = 0;
     schedule();
 }

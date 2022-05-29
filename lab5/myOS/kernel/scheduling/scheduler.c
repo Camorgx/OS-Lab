@@ -9,16 +9,15 @@ unsigned long *BspContext;
 void startMultitask(void) {
     BspContext = BspContextBase + 0x100 - 1;
     TCB firstTsk = qfront(&taskQueue);
-    context_switch(&BspContext, firstTsk.stack);
+    context_switch(&BspContext, firstTsk.stack, firstTsk.tid);
 }
-
-extern unsigned long* current_tsk_stack;
 
 void idleTsk(void) {
     while (qempty(&taskQueue)) schedule();
 }
 
 unsigned long* idle_stack;
+unsigned idle_id;
 
 extern void main(void);
 
@@ -27,7 +26,7 @@ void init_tsk_manager(void) {
     taskQueue.data = (TCB*) kmalloc(initial_size * sizeof(TCB));
     taskQueue.head = 0; taskQueue.tail = 1;
     taskQueue.size = initial_size;
-    createTsk(idleTsk);
+    idle_id = createTsk(idleTsk);
     idle_stack = task_list_head->next->data.stack;
     unsigned init = createTsk(main);
     tskStart(init);
@@ -35,12 +34,12 @@ void init_tsk_manager(void) {
 }
 
 void fifo_schedule(void) {
-    unsigned long* stack = qfront(&taskQueue).stack;
-    context_switch(&current_tsk_stack, stack);
+    TCB next = qfront(&taskQueue);
+    context_switch(&current_tsk_stack, next.stack, next.tid);
 }
 
 void schedule(void) {
     if (qempty(&taskQueue))
-        context_switch(&current_tsk_stack, idle_stack);
+        context_switch(&current_tsk_stack, idle_stack, idle_id);
     fifo_schedule();
 }

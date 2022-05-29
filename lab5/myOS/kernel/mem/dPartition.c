@@ -68,6 +68,8 @@ extern unsigned long align;
 unsigned long dPartitionAllocFirstFit(unsigned long dp, unsigned long size) {
     if (size == 0) return 0;
     dPartition* d_par = (dPartition*)dp;
+//    extern unsigned long userMemHandler;
+//    if (dp == userMemHandler) dPartitionWalkByAddr(dp);
     EMB* emb = (EMB*)(d_par->firstFreeStart);
     if (size % align) size = (size / align + 1) * align;
     int flag = 0;
@@ -90,6 +92,7 @@ unsigned long dPartitionAllocFirstFit(unsigned long dp, unsigned long size) {
         if (emb->prevStart == 0) d_par->firstFreeStart = new_emb_pos;
         else emb->prevStart->nextStart = (EMB*)new_emb_pos;
     }
+    // if (dp == userMemHandler) dPartitionWalkByAddr(dp);
     return (unsigned long)(emb + 1);
 }
 
