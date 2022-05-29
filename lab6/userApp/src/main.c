@@ -7,7 +7,7 @@
 extern void memTestCaseInit(void);
 #endif
 
-#define FIFO_TEST
+#define SCHEDULE_TEST
 
 void main(void) {
     setWallClockHook(displayWallClock);
@@ -17,13 +17,13 @@ void main(void) {
     memTestCaseInit();
 #endif
 
-    unsigned shell = createTsk(startShell, 1, 1000);
+    createTsk(startShell, 1, 300);
 
-#ifdef FIFO_TEST
-    createTsk(task2, 6, 200);
-    createTsk(task1, 2, 200);
-    createTsk(task4, 5, 200); 
-    createTsk(task3, 3, 200);
-    createTsk(task5, 4, 300);
-#endif // FIFO_TEST
+#ifdef SCHEDULE_TEST
+    createTsk(task2, 6, 100);
+    createTsk(task1, 2, 100);
+    createTsk(task4, 5, 100);
+    createTsk(task3, 3, 100);
+    createTsk(task5, 4, 200);
+#endif // SCHEDULE_TEST
 }

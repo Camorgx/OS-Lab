@@ -20,13 +20,19 @@ void startMultitask(void) {
     context_switch(&BspContext, firstTsk->stack, firstTsk->tid);
 }
 
-TCB init, idle;
+TCB init;
+TCB idle;
+
+unsigned idle_invalid;
 
 void idleTsk(void) {
-    while (system_scheduler.next_tsk()->tid == idle.tid) schedule();
+    while (system_scheduler.next_tsk()->tid == idle.tid);
+    schedule();
 }
 
 extern void main(void);
+
+unsigned long* initial_idle_stack;
 
 void init_tsk_manager(scheduler_type type) {
     set_schedule_method(type);
@@ -34,6 +40,7 @@ void init_tsk_manager(scheduler_type type) {
     *task_list_head = (task_list) {.data = NULL_TCB, .next = 0};
     createTsk(idleTsk, 0, 0);
     idle = task_list_head->next->data;
+    initial_idle_stack = idle.stack;
     createTsk(main, 0, 0);
     init = task_list_head->next->data;
     system_scheduler.init();
@@ -42,8 +49,9 @@ void init_tsk_manager(scheduler_type type) {
 }
 
 void schedule(void) {
-    TCB next = *(system_scheduler.next_tsk());
-    context_switch(&current_tsk_stack, next.stack, next.tid);
+    TCB* next = system_scheduler.next_tsk();
+    if (next->tid == idle.tid) *(next->stack + 9) = (unsigned long)idleTsk;
+    context_switch(&current_tsk_stack, next->stack, next->tid);
 }
 
 void set_schedule_method(scheduler_type type) {

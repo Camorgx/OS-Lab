@@ -15,6 +15,7 @@ void context_switch(unsigned long **prevTskStkAddr, unsigned long *nextTskStk,
     CTX_SW();
 }
 
+extern void idleTsk(void);
 void stack_init(unsigned long **stk, void (*task)(void)) {
     *(*stk)-- = (unsigned long)tskEnd;
     *(*stk)-- = (unsigned long)task; // eip
@@ -78,6 +79,7 @@ void tskStart(unsigned tskIndex) {
 
 void tskEnd(void) {
     destroyTsk(current_tsk_index);
+    current_tsk_stack = 0;
     system_scheduler.dequeue();
     schedule();
 }

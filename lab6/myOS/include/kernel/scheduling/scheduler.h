@@ -28,4 +28,9 @@ extern void init_tsk_manager(scheduler_type type);
 
 extern void check_arrive();
 
+extern TCB init;
+extern TCB idle;
+
+extern unsigned idle_invalid;
+
 #endif //LAB5_SCHEDULER_H

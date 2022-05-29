@@ -50,5 +50,5 @@ void pMemInit(void) {
 	}
     kernelMemHandler = dPartitionInit(pMemStart, pMemSize / 2);
     userMemHandler = dPartitionInit(pMemStart + pMemSize / 2, pMemSize - pMemSize / 2);
-    printk(0x7, "kernel = 0x%p\nuser = 0x%p\n", kernelMemHandler, userMemHandler);
+    // printk(0x7, "kernel = 0x%p\nuser = 0x%p\n", kernelMemHandler, userMemHandler);
 }

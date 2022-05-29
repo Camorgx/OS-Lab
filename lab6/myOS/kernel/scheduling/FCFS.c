@@ -14,7 +14,8 @@ void dequeue_FCFS() {
 }
 
 TCB* next_tsk_FCFS(void) {
-    return qFront(&queueFIFO);
+    if (qEmpty(&queueFIFO)) return &idle;
+    else return qFront(&queueFIFO);
 }
 
 scheduler FCFS_scheduler = (scheduler){.type = FCFS, .init = init_FCFS,
