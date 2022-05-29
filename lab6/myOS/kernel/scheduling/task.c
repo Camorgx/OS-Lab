@@ -36,13 +36,13 @@ task_list* task_list_head;
 const unsigned long stack_size = 0x100000; // 1 M
 
 unsigned tid_cnt = 1;
-unsigned createTsk(void (*tskBody)(void)) {
+unsigned createTsk(void (*tskBody)(void), unsigned prio, unsigned arr_time) {
     TCB tcb;
     tcb.tid = tid_cnt++;
     tcb.malloced_pos = malloc(stack_size);
     tcb.stack = (unsigned long*)(tcb.malloced_pos + stack_size) - 1;
     tcb.state = WAITING;
-    tcb.params = (tskPara) {.priority = 0, .arrTime = 0, .exeTime = 0};
+    tcb.params = (tskPara) {.priority = prio, .arrTime = arr_time};
     stack_init(&tcb.stack, tskBody);
     task_list* tmp = (task_list*) kmalloc(sizeof(task_list));
     tmp->data = tcb;

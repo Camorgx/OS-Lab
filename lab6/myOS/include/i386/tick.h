@@ -1,6 +1,6 @@
 #ifndef __TICK_H__
 #define __TICK_H__
-extern int system_ticks;
+extern unsigned system_ticks;
 extern int HH,MM,SS;
 
 // From asm file.

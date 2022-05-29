@@ -13,7 +13,6 @@ typedef enum State {
 typedef struct tskPara {
     unsigned priority;
     unsigned arrTime;
-    unsigned exeTime;
 } tskPara;
 
 typedef struct TCB {
@@ -32,9 +31,9 @@ typedef struct task_list {
 extern task_list* task_list_head;
 
 #define NULL_TCB ((TCB){.tid = 0, .state = READY, .stack = 0, \
-    .params = (tskPara){0, 0, 0}})
+    .params = (tskPara){.arrTime = 0, .priority = 0}})
 
-extern unsigned createTsk(void (*tskBody)(void));
+extern unsigned createTsk(void (*tskBody)(void), unsigned prio, unsigned arr_time);
 extern void destroyTsk(unsigned tskIndex);
 
 extern void stack_init(unsigned long **stk, void (*task)(void));

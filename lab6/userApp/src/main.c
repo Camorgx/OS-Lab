@@ -17,20 +17,13 @@ void main(void) {
     memTestCaseInit();
 #endif
 
-    unsigned shell = createTsk(startShell);
+    unsigned shell = createTsk(startShell, 1, 1000);
 
 #ifdef FIFO_TEST
-    unsigned t1 = createTsk(task1);
-    unsigned t2 = createTsk(task2);
-    unsigned t3 = createTsk(task3);
-    unsigned t4 = createTsk(task4);
-    unsigned t5 = createTsk(task5);
-    tskStart(t3);
-    tskStart(t5);
-    tskStart(t4);
-    tskStart(t2);
-    tskStart(t1);
+    createTsk(task2, 6, 200);
+    createTsk(task1, 2, 200);
+    createTsk(task4, 5, 200); 
+    createTsk(task3, 3, 200);
+    createTsk(task5, 4, 300);
 #endif // FIFO_TEST
-
-    tskStart(shell);
 }

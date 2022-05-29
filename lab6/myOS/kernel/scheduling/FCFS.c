@@ -19,4 +19,4 @@ TCB* next_tsk_FCFS(void) {
 
 scheduler FCFS_scheduler = (scheduler){.type = FCFS, .init = init_FCFS,
                                        .enqueue = enqueue_FCFS, .dequeue = dequeue_FCFS,
-                                       .next_tsk = next_tsk_FCFS};
+                                       .next_tsk = next_tsk_FCFS, .tick_func = 0};

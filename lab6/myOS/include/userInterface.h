@@ -17,7 +17,7 @@
 #define UNUSED __attribute__((unused))
 #endif // UNUSED
 
-extern unsigned createTsk(void (*tskBody)(void));
+extern unsigned createTsk(void (*tskBody)(void), unsigned prio, unsigned arr_time);;
 extern void tskStart(unsigned tskIndex);
 
 #endif // LAB4_USERINTERFACE_H

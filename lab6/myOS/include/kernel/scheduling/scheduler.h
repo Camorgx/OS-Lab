@@ -17,6 +17,7 @@ typedef struct scheduler {
     void (*enqueue)(TCB);
     void (*dequeue)(void);
     void (*init)(void);
+    void (*tick_func)(void);
 } scheduler;
 
 extern scheduler system_scheduler;
@@ -24,5 +25,7 @@ extern scheduler system_scheduler;
 extern void set_schedule_method(scheduler_type type);
 extern void schedule(void);
 extern void init_tsk_manager(scheduler_type type);
+
+extern void check_arrive();
 
 #endif //LAB5_SCHEDULER_H

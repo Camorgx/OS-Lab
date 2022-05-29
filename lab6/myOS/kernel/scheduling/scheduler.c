@@ -6,6 +6,8 @@
 #include "kernel/scheduling/RR.h"
 #include "kernel/scheduling/Priority.h"
 
+#include "i386/tick.h"
+
 const char* schedule_names[3] = {"FCFS", "RR", "PRIORITY"};
 
 scheduler system_scheduler;
@@ -29,9 +31,10 @@ extern void main(void);
 void init_tsk_manager(scheduler_type type) {
     set_schedule_method(type);
     task_list_head = (task_list*) kmalloc(sizeof(task_list));
-    createTsk(idleTsk);
+    *task_list_head = (task_list) {.data = NULL_TCB, .next = 0};
+    createTsk(idleTsk, 0, 0);
     idle = task_list_head->next->data;
-    createTsk(main);
+    createTsk(main, 0, 0);
     init = task_list_head->next->data;
     system_scheduler.init();
     tskStart(init.tid);
@@ -49,5 +52,12 @@ void set_schedule_method(scheduler_type type) {
         case RR: system_scheduler = RR_scheduler; break;
         case PRIORITY: system_scheduler = Priority_scheduler; break;
         default: system_scheduler = FCFS_scheduler;
+    }
+}
+
+void check_arrive() {
+    for (task_list* p = task_list_head->next; p; p = p->next) {
+        if (p->data.params.arrTime == system_ticks)
+            tskStart(p->data.tid);
     }
 }
