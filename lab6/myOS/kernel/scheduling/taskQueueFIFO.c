@@ -3,7 +3,7 @@
 #include "lib/libio.h"
 #include "string.h"
 
-taskQueueFIFO taskQueue;
+taskQueueFIFO queueFIFO;
 
 const unsigned initial_size = 8;
 
@@ -63,16 +63,16 @@ unsigned qPop(QUEUE_TYPE* queue) {
     else ++queue->head;
 }
 
-ITEM_TYPE qFront(const QUEUE_TYPE* queue) {
-    if (qEmpty(queue)) return NULL_ITEM;
-    else if (queue->head == queue->size - 1) return queue->data[0];
-    else return queue->data[queue->head + 1];
+ITEM_TYPE* qFront(const QUEUE_TYPE* queue) {
+    if (qEmpty(queue)) return &NULL_ITEM;
+    else if (queue->head == queue->size - 1) return queue->data;
+    else return queue->data + queue->head + 1;
 }
 
-ITEM_TYPE qBack(const QUEUE_TYPE* queue) {
-    if (qEmpty(queue)) return NULL_ITEM;
-    else if (queue->tail == 0) return queue->data[queue->size - 1];
-    else return queue->data[queue->tail - 1];
+ITEM_TYPE* qBack(const QUEUE_TYPE* queue) {
+    if (qEmpty(queue)) return &NULL_ITEM;
+    else if (queue->tail == 0) return queue->data + queue->size - 1;
+    else return queue->data + queue->tail - 1;
 }
 
 unsigned qLength(const QUEUE_TYPE* queue) {

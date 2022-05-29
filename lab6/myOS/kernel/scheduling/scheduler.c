@@ -1,59 +1,53 @@
-#include "kernel/scheduling/taskQueueFIFO.h"
 #include "kernel/scheduling/scheduler.h"
-#include "kernel/scheduling/task.h"
 
 #include "kernel/mem/mem.h"
 
-typedef enum scheduler_type {
-    FCFS,
-    RR,
-    PRIORITY
-} scheduler_type;
+#include "kernel/scheduling/FCFS.h"
+#include "kernel/scheduling/RR.h"
+#include "kernel/scheduling/Priority.h"
 
 const char* schedule_names[3] = {"FCFS", "RR", "PRIORITY"};
 
-typedef struct scheduler {
-    scheduler_type type;
-    TCB (*next_tsk)(void);
-    void (*enqueue)(TCB tsk);
-    void (*dequeue)(void);
-    void (*init)(void);
-} scheduler;
+scheduler system_scheduler;
 
 unsigned long BspContextBase[0x100];
 unsigned long *BspContext;
 void startMultitask(void) {
     BspContext = BspContextBase + 0x100 - 1;
-    TCB firstTsk = qFront(&taskQueue);
-    context_switch(&BspContext, firstTsk.stack, firstTsk.tid);
+    TCB* firstTsk = system_scheduler.next_tsk();
+    context_switch(&BspContext, firstTsk->stack, firstTsk->tid);
 }
+
+TCB init, idle;
 
 void idleTsk(void) {
-    while (qEmpty(&taskQueue)) schedule();
+    while (system_scheduler.next_tsk()->tid == idle.tid) schedule();
 }
-
-unsigned long* idle_stack;
-unsigned idle_id;
 
 extern void main(void);
 
-void init_tsk_manager(void) {
+void init_tsk_manager(scheduler_type type) {
+    set_schedule_method(type);
     task_list_head = (task_list*) kmalloc(sizeof(task_list));
-    qInit(&taskQueue);
-    idle_id = createTsk(idleTsk);
-    idle_stack = task_list_head->next->data.stack;
-    unsigned init = createTsk(main);
-    tskStart(init);
+    createTsk(idleTsk);
+    idle = task_list_head->next->data;
+    createTsk(main);
+    init = task_list_head->next->data;
+    system_scheduler.init();
+    tskStart(init.tid);
     startMultitask();
 }
 
-void fifo_schedule(void) {
-    TCB next = qFront(&taskQueue);
+void schedule(void) {
+    TCB next = *(system_scheduler.next_tsk());
     context_switch(&current_tsk_stack, next.stack, next.tid);
 }
 
-void schedule(void) {
-    if (qEmpty(&taskQueue))
-        context_switch(&current_tsk_stack, idle_stack, idle_id);
-    fifo_schedule();
+void set_schedule_method(scheduler_type type) {
+    switch (type) {
+        case FCFS: system_scheduler = FCFS_scheduler; break;
+        case RR: system_scheduler = RR_scheduler; break;
+        case PRIORITY: system_scheduler = Priority_scheduler; break;
+        default: system_scheduler = FCFS_scheduler;
+    }
 }

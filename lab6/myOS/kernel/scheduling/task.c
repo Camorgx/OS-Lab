@@ -1,8 +1,6 @@
-#include "kernel/scheduling/taskQueueFIFO.h"
 #include "kernel/scheduling/scheduler.h"
 #include "kernel/scheduling/task.h"
 #include "kernel/mem/mem.h"
-#include "lib/libio.h"
 #include "lib/libmem.h"
 
 unsigned long **prevTSK_StackPtrAddr;
@@ -43,11 +41,9 @@ unsigned createTsk(void (*tskBody)(void)) {
     tcb.tid = tid_cnt++;
     tcb.malloced_pos = malloc(stack_size);
     tcb.stack = (unsigned long*)(tcb.malloced_pos + stack_size) - 1;
-    // printf(0x7, "%d.stack = 0x%p\n", tcb.tid, tcb.stack);
     tcb.state = WAITING;
     tcb.params = (tskPara) {.priority = 0, .arrTime = 0, .exeTime = 0};
     stack_init(&tcb.stack, tskBody);
-    // dPartitionWalkByAddr(userMemHandler);
     task_list* tmp = (task_list*) kmalloc(sizeof(task_list));
     tmp->data = tcb;
     tmp->next = task_list_head->next;
@@ -77,11 +73,11 @@ void tskStart(unsigned tskIndex) {
     if (!tmp) return;
     TCB tsk = tmp->data;
     tsk.state = READY;
-    qPush(&taskQueue, tsk);
+    system_scheduler.enqueue(tsk);
 }
 
 void tskEnd(void) {
     destroyTsk(current_tsk_index);
-    qPop(&taskQueue);
+    system_scheduler.dequeue();
     schedule();
 }
