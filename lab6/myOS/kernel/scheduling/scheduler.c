@@ -38,6 +38,7 @@ void init_tsk_manager(scheduler_type type) {
     set_schedule_method(type);
     task_list_head = (task_list*) kmalloc(sizeof(task_list));
     *task_list_head = (task_list) {.data = NULL_TCB, .next = 0};
+    system_scheduler.init();
     createTsk(idleTsk, 0, 0);
     createTsk(main, 0, 0);
     tskStart(init.tid);
