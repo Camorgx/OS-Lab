@@ -39,11 +39,7 @@ void init_tsk_manager(scheduler_type type) {
     task_list_head = (task_list*) kmalloc(sizeof(task_list));
     *task_list_head = (task_list) {.data = NULL_TCB, .next = 0};
     createTsk(idleTsk, 0, 0);
-    idle = task_list_head->next->data;
-    initial_idle_stack = idle.stack;
     createTsk(main, 0, 0);
-    init = task_list_head->next->data;
-    system_scheduler.init();
     tskStart(init.tid);
     startMultitask();
 }
@@ -67,5 +63,6 @@ void check_arrive() {
     for (task_list* p = task_list_head->next; p; p = p->next) {
         if (p->data.params.arrTime == system_ticks)
             tskStart(p->data.tid);
+        else if (p->data.params.arrTime > system_ticks) break;
     }
 }

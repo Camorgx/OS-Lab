@@ -37,6 +37,8 @@ task_list* task_list_head;
 const unsigned long stack_size = 0x100000; // 1 M
 
 unsigned tid_cnt = 1;
+extern void main(void);
+extern unsigned long* initial_idle_stack;
 unsigned createTsk(void (*tskBody)(void), unsigned prio, unsigned arr_time) {
     TCB tcb;
     tcb.tid = tid_cnt++;
@@ -45,10 +47,40 @@ unsigned createTsk(void (*tskBody)(void), unsigned prio, unsigned arr_time) {
     tcb.state = WAITING;
     tcb.params = (tskPara) {.priority = prio, .arrTime = arr_time};
     stack_init(&tcb.stack, tskBody);
+    if (tskBody == idleTsk) {
+        idle = tcb;
+        initial_idle_stack = idle.stack;
+    }
+    else if (tskBody == main) init = tcb;
     task_list* tmp = (task_list*) kmalloc(sizeof(task_list));
     tmp->data = tcb;
-    tmp->next = task_list_head->next;
-    task_list_head->next = tmp;
+    if (task_list_head->next) {
+        int flag = 0;
+        task_list* p = task_list_head;
+        for (; p->next; p = p->next) {
+            if (tcb.params.arrTime < p->next->data.params.arrTime) {
+                flag = 1;
+                if (p == task_list_head) {
+                    tmp->next = task_list_head->next;
+                    task_list_head->next = tmp;
+                    break;
+                }
+                else {
+                    tmp->next = p->next;
+                    p->next = tmp;
+                    break;
+                }
+            }
+        }
+        if (flag == 0) {
+            p->next = tmp;
+            tmp->next = 0;
+        }
+    }
+    else {
+        task_list_head->next = tmp;
+        tmp->next = 0;
+    }
     return tcb.tid;
 }
 
