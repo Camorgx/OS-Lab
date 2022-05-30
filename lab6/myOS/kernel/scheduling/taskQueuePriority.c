@@ -52,4 +52,5 @@ TCB* pqTop(taskQueuePriority* queue) {
 void pqInit(taskQueuePriority* queue, int (*greater_func)(TCB* a, TCB* b)) {
     queue->greater = greater_func;
     vInit(&queue->dat);
+    vPushBack(&queue->dat, NULL_TCB);
 }
