@@ -1,5 +1,6 @@
 #include "kernel/scheduling/FCFS.h"
-#include "kernel/scheduling/taskQueueFIFO.h"
+
+taskQueueFIFO queueFIFO;
 
 void init_FCFS() {
     qInit(&queueFIFO);

@@ -9,7 +9,6 @@ typedef struct taskQueueFIFO {
     unsigned size;
 } taskQueueFIFO;
 
-extern taskQueueFIFO queueFIFO;
 extern const unsigned initial_size;
 
 extern void displayQueue(const taskQueueFIFO* queue);

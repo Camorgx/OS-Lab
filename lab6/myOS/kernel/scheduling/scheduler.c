@@ -6,6 +6,8 @@
 #include "kernel/scheduling/RR.h"
 #include "kernel/scheduling/Priority.h"
 
+#include "lib/libio.h"
+
 #include "i386/tick.h"
 
 const char* schedule_names[3] = {"FCFS", "RR", "PRIORITY"};
@@ -22,8 +24,6 @@ void startMultitask(void) {
 
 TCB init;
 TCB idle;
-
-unsigned idle_invalid;
 
 void idleTsk(void) {
     while (system_scheduler.next_tsk()->tid == idle.tid);
@@ -58,6 +58,7 @@ void set_schedule_method(scheduler_type type) {
         case PRIORITY: system_scheduler = Priority_scheduler; break;
         default: system_scheduler = FCFS_scheduler;
     }
+    printk(0x7, "Schedule type set to %s.\n", schedule_names[type]);
 }
 
 void check_arrive() {

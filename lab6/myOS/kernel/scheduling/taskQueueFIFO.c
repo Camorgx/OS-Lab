@@ -3,8 +3,6 @@
 #include "lib/libio.h"
 #include "string.h"
 
-taskQueueFIFO queueFIFO;
-
 const unsigned initial_size = 8;
 
 #define QUEUE_TYPE taskQueueFIFO
