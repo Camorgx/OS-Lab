@@ -17,7 +17,7 @@ void main(void) {
     memTestCaseInit();
 #endif
 
-    createTsk(startShell, 1, 300);
+    createTsk(startShell, 1, 1000);
 
 #ifdef SCHEDULE_TEST
     createTsk(task2, 6, 100);

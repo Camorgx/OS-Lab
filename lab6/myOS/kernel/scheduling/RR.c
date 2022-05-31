@@ -22,12 +22,14 @@ TCB* next_tsk_RR(void) {
 extern unsigned system_ticks;
 void tick_func_RR(void) {
     if (qEmpty(&queueRR)) return;
-    if (system_ticks % 50 == 0) {
+    if (system_ticks % 20 == 0 && system_ticks % 100 != 0) {
         if (current_tsk_stack) {
             TCB* cur = qFront(&queueRR);
             qPush(&queueRR, *cur);
             qPop(&queueRR);
-            schedule();
+            TCB* new_front = qFront(&queueRR);
+            context_switch(&(qBack(&queueRR)->stack),
+                           new_front->stack, new_front->tid);
         }
     }
 }
