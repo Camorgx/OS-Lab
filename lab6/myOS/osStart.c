@@ -15,5 +15,5 @@ void osStart(void)
 	enable_interrupt();
     clear_screen();
     pMemInit();
-    init_tsk_manager(PRIORITY);
+    init_tsk_manager(RR);
 }

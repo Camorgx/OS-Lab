@@ -20,6 +20,7 @@ typedef struct TCB {
     State state;
     unsigned long* stack;
     unsigned long malloced_pos;
+    void (*tsk)(void);
     tskPara params;
 } TCB;
 

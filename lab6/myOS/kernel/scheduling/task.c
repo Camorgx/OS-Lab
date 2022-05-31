@@ -44,6 +44,7 @@ unsigned createTsk(void (*tskBody)(void), unsigned prio, unsigned arr_time) {
     tcb.tid = tid_cnt++;
     tcb.malloced_pos = malloc(stack_size);
     tcb.stack = (unsigned long*)(tcb.malloced_pos + stack_size) - 1;
+    tcb.tsk = tskBody;
     tcb.state = WAITING;
     tcb.params = (tskPara) {.priority = prio, .arrTime = arr_time};
     stack_init(&tcb.stack, tskBody);
