@@ -47,8 +47,11 @@ void init_tsk_manager(scheduler_type type) {
 
 void schedule(void) {
     TCB* next = system_scheduler.next_tsk();
-    if (next->tid == idle.tid) *(next->stack + 9) = (unsigned long)idleTsk;
-    context_switch(&current_tsk_stack, next->stack, next->tid);
+    if (next->tid == idle.tid) {
+        *(next->stack + 9) = (unsigned long)idleTsk;
+        context_switch(&idle.stack, next->stack, next->tid);
+    }
+    else context_switch(&current_tsk_stack, next->stack, next->tid);
 }
 
 void set_schedule_method(scheduler_type type) {
