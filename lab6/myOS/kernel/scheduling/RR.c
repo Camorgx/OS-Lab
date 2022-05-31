@@ -20,9 +20,10 @@ TCB* next_tsk_RR(void) {
 }
 
 extern unsigned system_ticks;
+extern unsigned meet_arrival;
 void tick_func_RR(void) {
     if (qEmpty(&queueRR)) return;
-    if (system_ticks % 20 == 0 && system_ticks % 100 != 0) {
+    if (system_ticks % 20 == 0 && !meet_arrival) {
         if (current_tsk_stack) {
             TCB* cur = qFront(&queueRR);
             qPush(&queueRR, *cur);

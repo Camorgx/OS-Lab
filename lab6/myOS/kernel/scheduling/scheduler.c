@@ -64,10 +64,14 @@ void set_schedule_method(scheduler_type type) {
     printk(0x7, "Schedule type set to %s.\n", schedule_names[type]);
 }
 
+unsigned meet_arrival = 0;
 void check_arrive() {
+    meet_arrival = 0;
     for (task_list* p = task_list_head->next; p; p = p->next) {
-        if (p->data.params.arrTime == system_ticks)
+        if (p->data.params.arrTime == system_ticks) {
             tskStart(p->data.tid);
+            meet_arrival = 1;
+        }
         else if (p->data.params.arrTime > system_ticks) break;
     }
 }
