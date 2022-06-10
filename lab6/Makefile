@@ -15,15 +15,18 @@ OS_OBJS       = ${MYOS_OBJS} ${USER_APP_OBJS}
 
 output/myOS.elf: ${OS_OBJS} ${MULTI_BOOT_HEADER}
 	@${CROSS_COMPILE}ld -n -T myOS/myOS.ld ${MULTI_BOOT_HEADER} ${OS_OBJS} -o output/myOS.elf
+	@echo "Linking myOS.elf"
 	@echo "Build finished successfully."
 
 output/%.o : %.S
 	@mkdir -p $(dir $@)
 	@${CROSS_COMPILE}gcc ${ASM_FLAGS} -c -o $@ $<
+	@echo "Assemblying "$<
 
 output/%.o : %.c
 	@mkdir -p $(dir $@)
 	@${CROSS_COMPILE}gcc ${C_FLAGS} -I${OS_INCLUDE_PATH} -I ${USER_INCLUDE_PATH} -c -o $@ $<
+	@echo "Compiling "$<
 
 clean:
 	@rm -rf output
